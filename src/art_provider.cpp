@@ -255,7 +255,11 @@ bool ArtProvider::fetchOnlineRandom(Artwork& out, uint8_t** jpgBuf, size_t* jpgL
 
     String metaUrl;
     if (kGalleryMode) {
+      // 图库模式同样先试 HTTP (jsDelivr 支持明文 HTTP), 规避 HTTPS 长连接节流
       metaUrl = ART_GALLERY_JSON_URL;
+      if (useHttp && metaUrl.startsWith("https://")) {
+        metaUrl = "http://" + metaUrl.substring(8);
+      }
     } else {
       String scheme = useHttp ? "http" : "https";
       metaUrl = scheme + "://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=8";
@@ -266,6 +270,11 @@ bool ArtProvider::fetchOnlineRandom(Artwork& out, uint8_t** jpgBuf, size_t* jpgL
 
     bool ok = kGalleryMode ? parseGalleryListMeta(payload, out) : parseBingMeta(payload, out, useHttp);
     if (!ok) continue;
+
+    // 图片同样先试 HTTP, 避免 HTTPS 大文件下载被节流
+    if (kGalleryMode && useHttp && out.imagePath.startsWith("https://")) {
+      out.imagePath = "http://" + out.imagePath.substring(8);
+    }
 
     uint8_t* buf = nullptr;
     size_t len = 0;
