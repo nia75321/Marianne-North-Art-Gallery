@@ -17,6 +17,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Show run context
+        run: |
+          echo "Commit:   $(git rev-parse --short HEAD)"
+          echo "Branch:   ${{ github.ref_name }}"
+          echo "Date:     $(date -u '+%Y-%m-%d %H:%M UTC')"
+
       - name: Run daily painting bot
         env:
           REPO: ${{ github.repository }}
