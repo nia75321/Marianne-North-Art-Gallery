@@ -68,14 +68,17 @@ bool ArtProvider::begin() {
   return sdReady_;
 }
 
-static void configureHttp(HTTPClient& http, bool image) {
+static void configureHttp(HTTPClient& http, bool image, const String& url) {
   http.setTimeout(ART_HTTP_TIMEOUT_MS);
   http.setReuse(false);
   http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
   http.setUserAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0 Safari/537.36");
   if (image) {
     http.addHeader("Accept", "image/avif,image/webp,image/apng,image/*,*/*;q=0.8");
-    http.addHeader("Referer", "https://cn.bing.com/");
+    // Referer 仅对 Bing 图片需要; 对 Gitee 等图库源会触发防盗链 403
+    if (url.indexOf("bing.com") >= 0) {
+      http.addHeader("Referer", "https://cn.bing.com/");
+    }
     http.addHeader("Cache-Control", "no-cache");
   } else {
     http.addHeader("Accept", "application/json,text/plain,*/*");
@@ -95,7 +98,7 @@ bool ArtProvider::httpGet(const String& url, String& out, uint32_t timeoutMs) {
     http.begin(url);
   }
   http.setTimeout(timeoutMs);
-  configureHttp(http, false);
+  configureHttp(http, false, url);
 
   int code = http.GET();
   if (code != HTTP_CODE_OK) {
@@ -122,7 +125,7 @@ bool ArtProvider::downloadImage(const String& url, uint8_t** outBuf, size_t* out
   } else {
     http.begin(url);
   }
-  configureHttp(http, true);
+  configureHttp(http, true, url);
 
   int code = http.GET();
   if (code != HTTP_CODE_OK) {
