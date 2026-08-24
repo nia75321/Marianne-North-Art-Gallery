@@ -233,6 +233,14 @@ bool ArtProvider::parseGalleryListMeta(const String& payload, Artwork& out) {
   String url = pick["image_url"] | "";
   if (url.length() == 0) return false;
 
+  // 相对路径(仅文件名)时, 以 gallery.json 所在目录为基础拼接
+  if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    String base = ART_GALLERY_JSON_URL;
+    int slash = base.lastIndexOf('/');
+    if (slash >= 0) base = base.substring(0, slash + 1);
+    url = base + url;
+  }
+
   out.title = pick["title"] | "Untitled";
   out.artist = pick["artist"] | "Unknown artist";
   out.year = pick["year"] | "";

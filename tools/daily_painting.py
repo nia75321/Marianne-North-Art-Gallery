@@ -284,14 +284,13 @@ def main():
     history = history[:HISTORY_LEN]
     save_history(history)
 
-    base = f"https://cdn.jsdelivr.net/gh/{repo}@{branch}" if repo else "https://example.com"
     items = []
     for h in history[:KEEP_RECENT]:
         items.append({
             "title": h["title"],
             "artist": ARTIST,
             "year": h["year"],
-            "image_url": f"{base}/{OUT_DIR}/painting-{h['date']}.jpg",
+            "image_url": f"painting-{h['date']}.jpg",
         })
     with open(GALLERY_FILE, "w", encoding="utf-8") as f:
         json.dump(items, f, ensure_ascii=False, indent=2)
