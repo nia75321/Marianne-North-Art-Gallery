@@ -1,0 +1,62 @@
+# M5Stack CoreS3 项目规则
+
+## 项目概览
+
+- 目标硬件：**M5Stack CoreS3**（SKU K128）
+- 开发环境：**PlatformIO**（board ID：`m5stack-cores3`，platform：`espressif32`）
+- 编程框架：**Arduino**
+- 项目用途：基于 CoreS3 内置 GC0308 摄像头的相机应用（拍照 / 图像显示 / 本地存储）
+
+## 硬件规格
+
+- SoC：ESP32-S3，双核 Xtensa LX7 @ 240MHz，内置 2.4GHz Wi-Fi
+- Flash：16MB；PSRAM：8MB（Quad）
+- 屏幕：2.0" 320×240 电容触摸 IPS（ILI9342C，SPI）
+- 摄像头：GC0308（0.3MP，DVP 并行接口，I2C 地址 `0x21`）
+- 近距离传感器：LTR-553ALS-WA（I2C `0x23`）
+- 麦克风：ES7210 ADC（I2C `0x40`，双麦克风输入）
+- 喇叭：AW88298 I2S 功放（I2C `0x36`，1W）
+- 触摸屏：FT6336U（I2C `0x38`）
+- IMU：BMI270（I2C `0x69`）+ BMM150 磁力计（经 BMI270 辅助 I2C，`0x10`）
+- RTC：BM8563（I2C `0x51`）
+- PMU：AXP2101（I2C `0x34`），另配 AW9523B IO 扩展器（I2C `0x58`）
+- microSD 卡槽（最大 16GB，SPI）
+
+## 引脚速查（详见 `include/pinout.h`）
+
+- 内部 I2C（`In_I2C`）：SDA=**GPIO12**，SCL=**GPIO11**（板上所有外设共用）
+- 外部 I2C（`Ex_I2C`，Port.A）：SDA=**GPIO2**，SCL=**GPIO1**
+- LCD（ILI9342C，SPI）：MOSI=**GPIO37**，SCK=**GPIO36**，CS=**GPIO3**，DC=**GPIO35**
+  - 背光由 AXP2101 控制，RST 由 AW9523B 控制，无直接 GPIO
+- microSD（SPI）：MISO=**GPIO35**，MOSI=**GPIO37**，SCK=**GPIO36**，CS=**GPIO4**
+- 摄像头 GC0308（DVP）：PCLK=**GPIO45**，VSYNC=**GPIO46**，HREF=**GPIO38**，D0~D7=**GPIO39/40/41/42/15/16/48/47**
+  - SCCB（即 I2C）：SDA=GPIO12，SCL=GPIO11；RST 由 AW9523B 控制
+- I2S 音频：BCK=**GPIO34**，WS=**GPIO33**，MIC DAT=**GPIO13**，MCLK=**GPIO14**，SPK DAT=**GPIO0**
+
+## 代码规范
+
+- 用 Arduino 框架编写，`setup()` / `loop()` 结构
+- 优先使用 **M5Unified** 统一 API（`M5.begin()`、`M5.Display`、`M5.Camera` 等），特殊功能用 **M5CoreS3** 库
+- 摄像头初始化、帧获取参考 M5CoreS3 库 `examples/Basic/camera`
+- 硬编码引脚一律引用 `include/pinout.h` 中的宏，禁止散落魔法数字
+- 内联魔法常量（I2C 地址、传感器地址）引用 `pinout.h` 中的 `*_ADDR` 宏
+- 命名：宏用 `UPPER_SNAKE_CASE`，函数/变量用 `camelCase`，类用 `PascalCase`
+- 日志统一用 `M5_LOGD/M5_LOGI/M5_LOGW/M5_LOGE`（不用 `Serial.printf`）
+- 使用 `ESP_LOGI`/`ESP_LOGE` 时带上 `TAG` 常量
+
+## PlatformIO 注意事项
+
+- 必须启用 PSRAM 相关宏，否则摄像头帧缓冲分配失败：
+  - `build_flags = -DBOARD_HAS_PSRAM -mfix-esp32-psram-cache-issue -DESP32S3`
+- CoreS3 用 USB-CDC 作为串口输出，需要 `-DARDUINO_USB_CDC_ON_BOOT=1 -DARDUINO_USB_MODE=1`
+- 推荐依赖：`m5stack/M5Unified@^0.1.6`，摄像头用 `m5stack/M5CoreS3`
+- 烧录速度建议 `upload_speed = 1500000`，`monitor_speed = 115200`
+- 摄像头 DVP 驱动使用 `esp_camera`（arduino-esp32 自带），注意 PSRAM 帧缓冲配置
+
+## 常见坑
+
+- GPIO45/46 不可用作普通输出（摄像头 PCLK/VSYNC 占用）
+- GPIO47/48 是 USB D-/D+ 的默认引脚，本项目已用于摄像头 D6/D7，不可再作 USB
+- 背光与 LCD RST 无直接 GPIO，需要通过 AXP2101 / AW9523B 库或 M5Unified 控制，禁止 `digitalWrite` 硬控
+- BMI270 与 BMM150 共板，BMM150 通过 BMI270 访问，不要单独初始化重复枚举
+- 电池供电时注意 AXP2101 电源路径，长时间高功耗应用先评估电流
