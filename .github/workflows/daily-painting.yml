@@ -16,12 +16,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Show run context
         run: |
           echo "Commit:   $(git rev-parse --short HEAD)"
           echo "Branch:   ${{ github.ref_name }}"
           echo "Date:     $(date -u '+%Y-%m-%d %H:%M UTC')"
+
+      # 先同步到远程最新代码再运行, 避免基于旧提交生成
+      - name: Sync to latest main
+        run: |
+          git fetch origin
+          git reset --hard origin/main
+          echo "Now at:   $(git rev-parse --short HEAD)"
 
       - name: Run daily painting bot
         env:
@@ -38,8 +47,11 @@ jobs:
             echo "No new painting, nothing to commit."
           else
             git commit -m "Daily painting $(date -u +%F)"
-            git push
           fi
+          # 远程若被其他提交领先(手动推送/并发运行), rebase 到最新再推
+          git fetch origin
+          git rebase -X theirs origin/"${{ github.ref_name }}"
+          git push origin "${{ github.ref_name }}"
 
       - name: Push to Gitee (mirror, 国内访问)
         if: env.GITEE_USERNAME != '' && env.GITEE_TOKEN != ''
