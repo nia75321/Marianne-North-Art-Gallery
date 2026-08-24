@@ -36,6 +36,7 @@ class ArtProvider {
  private:
   bool httpGet(const String& url, String& out, uint32_t timeoutMs);
   bool downloadImage(const String& url, uint8_t** outBuf, size_t* outLen);
+  bool rangeChunkDownload(const String& url, uint8_t* buf, size_t cap);
   bool parseBingMeta(const String& payload, Artwork& out, bool useHttp);
   bool parseGalleryListMeta(const String& payload, Artwork& out);
   bool cacheToSd(const Artwork& art, const uint8_t* jpg, size_t len);

@@ -113,6 +113,25 @@ bool ArtProvider::httpGet(const String& url, String& out, uint32_t timeoutMs) {
   return true;
 }
 
+// 从流中读取最多 want 字节; 服务器断连/8秒无数据则提前返回
+static size_t readStream(WiFiClient* stream, uint8_t* dst, size_t want) {
+  size_t got = 0;
+  uint32_t lastDataMs = millis();
+  while (got < want && millis() - lastDataMs < 8000) {
+    int n = stream->read(dst + got, min((int)(want - got), 2048));
+    if (n < 0) break;
+    if (n == 0) {
+      if (!stream->connected() && stream->available() == 0) break;
+      delay(2);
+      yield();
+      continue;
+    }
+    got += n;
+    lastDataMs = millis();
+  }
+  return got;
+}
+
 bool ArtProvider::downloadImage(const String& url, uint8_t** outBuf, size_t* outLen) {
   *outBuf = nullptr;
   *outLen = 0;
@@ -150,26 +169,21 @@ bool ArtProvider::downloadImage(const String& url, uint8_t** outBuf, size_t* out
     return false;
   }
 
-  WiFiClient* stream = http.getStreamPtr();
-  size_t total = 0;
-  uint32_t lastDataMs = millis();
-  while (total < cap && millis() - lastDataMs < 8000) {
-    if (size > 0 && total >= (size_t)size) break;
-    int n = stream->read(buf + total, min((int)(cap - total), 2048));
-    if (n < 0) break;
-    if (n == 0) {
-      if (!stream->connected() && stream->available() == 0) break;
-      delay(2);
-      yield();  // 保持 Wi-Fi 协议栈活跃, 防止看门狗复位
-      continue;
-    }
-    total += n;
-    lastDataMs = millis();
-  }
+  size_t total = readStream(http.getStreamPtr(), buf, cap);
   http.end();
 
-  if (size > 0 && total != (size_t)size) {
-    log_w("Image download incomplete: %u/%lld", total, size);
+  if (total != cap && size > 0 && url.indexOf("gitee.com") >= 0) {
+    // Gitee 匿名下载每连接只给约 15KB 就断连, 改用 Range 小分块拼接
+    log_w("Gitee cut at %u/%u, resuming with Range chunks", total, cap);
+    if (!rangeChunkDownload(url, buf, cap)) {
+      free(buf);
+      return false;
+    }
+    total = cap;
+  }
+
+  if (size > 0 && total != cap) {
+    log_w("Image download incomplete: %u/%u", total, cap);
     free(buf);
     return false;
   }
@@ -179,14 +193,53 @@ bool ArtProvider::downloadImage(const String& url, uint8_t** outBuf, size_t* out
     return false;
   }
 
-  if (size < 2 || buf[0] != 0xFF || buf[1] != 0xD8) {
+  if (cap < 2 || buf[0] != 0xFF || buf[1] != 0xD8) {
     log_w("Image is not JPEG");
     free(buf);
     return false;
   }
 
   *outBuf = buf;
-  *outLen = size;
+  *outLen = cap;
+  return true;
+}
+
+// Gitee 限制: 匿名 raw 下载每连接只给约 15KB. 用 12KB 的 Range 分块绕过.
+// nginx 对静态文件原生支持 Range 响应 206 Partial Content.
+bool ArtProvider::rangeChunkDownload(const String& url, uint8_t* buf, size_t cap) {
+  const size_t CHUNK = 12000;
+  size_t offset = 0;
+  while (offset < cap) {
+    size_t end = offset + CHUNK - 1;
+    if (end >= cap) end = cap - 1;
+
+    HTTPClient http;
+    if (url.startsWith("https")) {
+      secureClient_.setInsecure();
+      http.begin(secureClient_, url);
+    } else {
+      http.begin(url);
+    }
+    configureHttp(http, true, url);
+    char range[40];
+    snprintf(range, sizeof(range), "bytes=%u-%u", (unsigned)offset, (unsigned)end);
+    http.addHeader("Range", range);
+
+    int code = http.GET();
+    if (code != HTTP_CODE_PARTIAL_CONTENT) {
+      log_w("Gitee Range %s -> HTTP %d (服务器不支持 Range?)", range, code);
+      http.end();
+      return false;
+    }
+    size_t want = end - offset + 1;
+    size_t got = readStream(http.getStreamPtr(), buf + offset, want);
+    http.end();
+    if (got != want) {
+      log_w("Gitee Range chunk %s incomplete: %u/%u", range, got, want);
+      return false;
+    }
+    offset += got;
+  }
   return true;
 }
 
