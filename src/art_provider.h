@@ -29,6 +29,9 @@ class ArtProvider {
   /** 从 SD 卡随机选一张画作 (元数据读同名 .json, 缺省用文件名) */
   bool fetchSdRandom(Artwork& out);
 
+  /** 从 SD 卡按文件名顺序取下一张画作 */
+  bool fetchSdNext(Artwork& out);
+
   static void releaseJpg(uint8_t* buf) {
     if (buf) free(buf);
   }
@@ -45,4 +48,5 @@ class ArtProvider {
 
   WiFiClientSecure secureClient_;
   bool sdReady_ = false;
+  String sdLastShown_;  // 最近一次显示的 SD 图片路径, 用于按时间顺序翻页
 };

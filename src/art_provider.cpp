@@ -430,42 +430,38 @@ void ArtProvider::loadMetadata(const String& jpgPath, Artwork& out) {
   }
 }
 
+static bool isValidJpegFile(const String& path) {
+  File image = SD.open(path, FILE_READ);
+  if (!image || image.size() < 4) {
+    if (image) image.close();
+    return false;
+  }
+  size_t size = image.size();
+  uint8_t head[2] = {0, 0};
+  image.read(head, sizeof(head));
+  image.seek(size - 2);
+  uint8_t tail[2] = {0, 0};
+  image.read(tail, sizeof(tail));
+  image.close();
+  return head[0] == 0xFF && head[1] == 0xD8 &&
+         tail[0] == 0xFF && tail[1] == 0xD9;
+}
+
 bool ArtProvider::fetchSdRandom(Artwork& out) {
   if (!sdReady_) return false;
-
-  // 600 个 String 对象不能放栈上(会溢出 8KB 任务栈), 用堆分配
   String* files = new (std::nothrow) String[ART_SD_MAX_FILES];
   if (!files) return false;
   int count = 0;
-  // 在线下载的画作统一保存在 cache, 只扫描这里，避免目录路径混淆。
   scanSdDir(ART_SD_CACHE, files, count);
   if (count == 0) {
     log_w("No art under %s", ART_SD_ROOT);
     delete[] files;
     return false;
   }
-
-  // 跳过网络中断留下的损坏 JPEG, 否则画面会反复进入 Decode failed。
   for (int attempt = 0; attempt < count; ++attempt) {
     int index = random(count);
     String path = files[index];
-    if (path.indexOf("/cache/") < 0 && path.startsWith(String(ART_SD_ROOT) + "/")) {
-      continue;
-    }
-    File image = SD.open(path, FILE_READ);
-    bool valid = false;
-    if (image && image.size() >= 4) {
-      uint8_t head[2] = {0, 0};
-      image.read(head, sizeof(head));
-      image.seek(image.size() - 2);
-      uint8_t tail[2] = {0, 0};
-      image.read(tail, sizeof(tail));
-      valid = head[0] == 0xFF && head[1] == 0xD8 &&
-              tail[0] == 0xFF && tail[1] == 0xD9;
-    }
-    image.close();
-    if (!valid) continue;
-
+    if (!isValidJpegFile(path)) continue;
     delete[] files;
     out.id = path;
     out.imagePath = path;
@@ -473,8 +469,56 @@ bool ArtProvider::fetchSdRandom(Artwork& out) {
     loadMetadata(path, out);
     return true;
   }
-
   delete[] files;
   log_w("No valid JPEG under %s", ART_SD_ROOT);
   return false;
+}
+
+bool ArtProvider::fetchSdNext(Artwork& out) {
+  if (!sdReady_) return false;
+  String* files = new (std::nothrow) String[ART_SD_MAX_FILES];
+  if (!files) return false;
+  int count = 0;
+  scanSdDir(ART_SD_CACHE, files, count);
+  if (count == 0) {
+    log_w("No art under %s", ART_SD_ROOT);
+    delete[] files;
+    return false;
+  }
+
+  // 文件名按日期排序 (painting-YYYYMMDD.jpg)。按时间顺序显示:
+  // 上次显示的是第 N 张, 这次显示第 N+1 张; 超过最新一张后回到最早一张。
+  String lastShown = sdLastShown_;
+  String best = "";
+  bool foundLast = (lastShown.length() == 0);
+  for (int i = 0; i < count; ++i) {
+    if (files[i].length() == 0 || !files[i].startsWith(String(ART_SD_CACHE) + "/")) continue;
+    if (foundLast) {
+      if (best.length() == 0 || files[i] < best) best = files[i];
+    } else if (files[i] == lastShown) {
+      foundLast = true;
+    }
+  }
+  if (!foundLast || best.length() == 0) {
+    // 找不到上一张或已到最后一张, 回到最早的画作。
+    for (int i = 0; i < count; ++i) {
+      if (files[i].length() == 0 || !files[i].startsWith(String(ART_SD_CACHE) + "/")) continue;
+      if (best.length() == 0 || files[i] < best) best = files[i];
+    }
+  }
+  delete[] files;
+  if (best.length() == 0) {
+    log_w("No art under %s", ART_SD_ROOT);
+    return false;
+  }
+  if (!isValidJpegFile(best)) {
+    log_w("No valid JPEG under %s", ART_SD_ROOT);
+    return false;
+  }
+  sdLastShown_ = best;
+  out.id = best;
+  out.imagePath = best;
+  out.fromOnline = false;
+  loadMetadata(best, out);
+  return true;
 }
