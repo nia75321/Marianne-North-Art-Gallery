@@ -385,7 +385,11 @@ void ArtProvider::scanSdDir(const char* dir, String* files, int& count) {
   File f;
   while ((f = d.openNextFile()) && count < ART_SD_MAX_FILES) {
     if (!f.isDirectory() && isJpgName(f.name())) {
-      files[count++] = String(dir) + "/" + f.name();
+      String path = f.name();
+      // Arduino-ESP32 3.x may return an absolute name from openNextFile().
+      // Do not prepend dir twice (e.g. /art/cache//art/cache/photo.jpg).
+      if (!path.startsWith("/")) path = String(dir) + "/" + path;
+      files[count++] = path;
     }
     f.close();
   }
@@ -437,12 +441,33 @@ bool ArtProvider::fetchSdRandom(Artwork& out) {
     return false;
   }
 
-  String path = files[random(count)];
-  delete[] files;
+  // 跳过网络中断留下的损坏 JPEG, 否则画面会反复进入 Decode failed。
+  for (int attempt = 0; attempt < count; ++attempt) {
+    int index = random(count);
+    String path = files[index];
+    File image = SD.open(path, FILE_READ);
+    bool valid = false;
+    if (image && image.size() >= 4) {
+      uint8_t head[2] = {0, 0};
+      image.read(head, sizeof(head));
+      image.seek(image.size() - 2);
+      uint8_t tail[2] = {0, 0};
+      image.read(tail, sizeof(tail));
+      valid = head[0] == 0xFF && head[1] == 0xD8 &&
+              tail[0] == 0xFF && tail[1] == 0xD9;
+    }
+    image.close();
+    if (!valid) continue;
 
-  out.id = path;
-  out.imagePath = path;
-  out.fromOnline = false;
-  loadMetadata(path, out);
-  return true;
+    delete[] files;
+    out.id = path;
+    out.imagePath = path;
+    out.fromOnline = false;
+    loadMetadata(path, out);
+    return true;
+  }
+
+  delete[] files;
+  log_w("No valid JPEG under %s", ART_SD_ROOT);
+  return false;
 }
