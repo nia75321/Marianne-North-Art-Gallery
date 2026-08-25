@@ -206,28 +206,20 @@ void loop() {
   M5.update();
   imu.update();
 
-  // 左右倾斜切换画作; 触摸用于放大/缩小当前画面。
-  if (imu.consumeTiltLeft()) {
-    showPrevious();
-  }
-  if (imu.consumeTiltRight()) {
-    showNextRandom();
-  }
-
-  // 单击屏幕切换适合屏幕/放大模式。
+  // 仅使用触摸控制: 左半屏上一张, 右半屏下一张。
   if (M5.Touch.getCount()) {
     const auto& t = M5.Touch.getDetail();
-    if (t.wasClicked() && histCount > 0) {
-      const HistoryEntry& current = hist[histCount - 1];
-      ui::toggleZoom(current.art, current.jpg, current.jpgLen,
-                     current.art.fromOnline ? "ONLINE" : "SD");
+    if (t.wasClicked()) {
+      if (t.y < M5.Display.height() / 2 && histCount > 0) {
+        const HistoryEntry& current = hist[histCount - 1];
+        ui::toggleZoom(current.art, current.jpg, current.jpgLen,
+                       current.art.fromOnline ? "ONLINE" : "SD");
+      } else if (t.x < M5.Display.width() / 2) {
+        showPrevious();
+      } else {
+        showNextRandom();
+      }
     }
-  }
-
-  // 自动轮播
-  if (ART_SLIDESHOW_MS > 0 && millis() - lastAutoMs >= ART_SLIDESHOW_MS) {
-    lastAutoMs = millis();
-    showNextRandom();
   }
 
   // Wi-Fi 断线重连 (后台 30s 一次)
