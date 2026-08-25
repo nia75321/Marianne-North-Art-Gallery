@@ -29,7 +29,6 @@ static HistoryEntry hist[ART_HISTORY_SIZE];
 static int histCount = 0;
 
 static bool wifiConnected = false;
-static bool onlineLoadedThisBoot = false;
 static uint32_t lastAutoMs = 0;
 static uint32_t lastWifiRetryMs = 0;
 
@@ -75,28 +74,24 @@ static void showPrevious() {
 
 /** 右倾斜 / 自动轮播: 随机下一张 (联网优先, 否则 SD) */
 static void showNextRandom() {
-  ui::toast("Loading...");
   Artwork a;
   uint8_t* jpg = nullptr;
   size_t len = 0;
 
-  if (WiFi.status() == WL_CONNECTED && !onlineLoadedThisBoot) {
-    onlineLoadedThisBoot = true;
-    if (art.fetchOnlineRandom(a, &jpg, &len)) {
-      pushHistory(a, jpg, len);
-      showEntry(hist[histCount - 1]);
-      return;
-    }
-    art.releaseJpg(jpg);
-    ui::toast("Online failed, using SD");
-  }
-
+  // SD 优先: 避免每次翻页都访问不稳定的在线源并造成画面闪烁。
   if (art.sdReady() && art.fetchSdRandom(a)) {
     pushHistory(a, nullptr, 0);
     showEntry(hist[histCount - 1]);
     return;
   }
 
+  // SD 为空时才在线获取; 成功后由 ArtProvider 缓存到 SD。
+  if (WiFi.status() == WL_CONNECTED && art.fetchOnlineRandom(a, &jpg, &len)) {
+    pushHistory(a, jpg, len);
+    showEntry(hist[histCount - 1]);
+    return;
+  }
+  art.releaseJpg(jpg);
   ui::toast("No artwork available");
 }
 
