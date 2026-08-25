@@ -32,8 +32,8 @@ USER_AGENT = "MarianneNorthDailyBot/1.0 (GitHub Actions; personal art gallery)"
 
 HISTORY_FILE = os.path.join(OUT_DIR, "history.json")
 GALLERY_FILE = os.path.join(OUT_DIR, "gallery.json")
-KEEP_RECENT = 7      # gallery.json 保留最近 7 天
-KEEP_FILES = 12      # 磁盘上保留最近 12 张图片
+KEEP_RECENT = 12     # gallery.json 保留最近 12 天, 方便设备测试翻页
+KEEP_FILES = 30      # 磁盘上保留最近 30 张图片
 HISTORY_LEN = 300    # history.json 记住最近 300 条, 防止短期内重复
 
 

@@ -18,8 +18,6 @@ void showBoot();
 /** 全屏显示一幅画作 + 底部信息栏 */
 void showArtwork(const Artwork& art, const uint8_t* jpg, size_t jpgLen, const char* sourceTag);
 
-/** 单击切换适合屏幕/放大查看模式。 */
-void toggleZoom(const Artwork& art, const uint8_t* jpg, size_t jpgLen, const char* sourceTag);
 
 /** 无法显示时占位提示 */
 void showPlaceholder(const char* msg);

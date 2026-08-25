@@ -41,6 +41,7 @@
  * 手动立即换画: 仓库 Actions 页面点 "Run workflow"。
  * ------------------------------------------------------------------ */
 #define ART_GALLERY_JSON_URL    "https://marianne-north-art-1474440715.cos.ap-shanghai.myqcloud.com/gallery.json"
+/* 每天在线画作之外, gallery.json 保留最近 7 张供 SD 测试翻页 */
 
 /* ------------------------------------------------------------------ *
  * IMU 左右倾斜手势

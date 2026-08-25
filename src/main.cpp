@@ -32,10 +32,6 @@ static int histCount = 0;
 static bool wifiConnected = false;
 static uint32_t lastAutoMs = 0;
 static bool dailyOnlineAttempted = false;
-static bool touchLongHandled = false;
-static uint32_t touchStartedMs = 0;
-static int touchStartX = 0;
-static int touchStartY = 0;
 
 static int currentDay() {
   time_t now = time(nullptr);
@@ -126,7 +122,7 @@ static void showNextRandom() {
   uint8_t* jpg = nullptr;
   size_t len = 0;
 
-  // 每天首次切换时在线获取一幅新画; 成功后同时缓存到 SD。
+  // SD 优先: 当天已有下载标记时不再请求网络; 仅当天首次成功时在线更新。
   int day = currentDay();
   bool shouldFetchToday = day >= 0 && !downloadedToday() && !dailyOnlineAttempted;
   if (WiFi.status() == WL_CONNECTED && shouldFetchToday) {
@@ -210,30 +206,14 @@ void loop() {
   M5.update();
   imu.update();
 
-  // 长按图片区域进入/退出放大; 短按底部左右区域翻页。
-  const auto& touch = M5.Touch.getDetail();
+  // 仅使用触摸左右区域翻页。
   if (M5.Touch.getCount()) {
-    if (touch.wasPressed()) {
-      touchStartedMs = millis();
-      touchStartX = touch.x;
-      touchStartY = touch.y;
-      touchLongHandled = false;
-    }
-    if (!touchLongHandled && touch.isPressed() &&
-        millis() - touchStartedMs >= 600 && touchStartY < M5.Display.height() - 44 &&
-        histCount > 0) {
-      const HistoryEntry& current = hist[histCount - 1];
-      ui::toggleZoom(current.art, current.jpg, current.jpgLen,
-                     current.art.fromOnline ? "ONLINE" : "SD");
-      touchLongHandled = true;
-    }
-    if (touch.wasReleased() && !touchLongHandled) {
-      if (touchStartY >= M5.Display.height() - 44) {
-        if (touchStartX < M5.Display.width() / 2) {
-          showPrevious();
-        } else {
-          showNextRandom();
-        }
+    const auto& touch = M5.Touch.getDetail();
+    if (touch.wasClicked()) {
+      if (touch.x < M5.Display.width() / 2) {
+        showPrevious();
+      } else {
+        showNextRandom();
       }
     }
   }
