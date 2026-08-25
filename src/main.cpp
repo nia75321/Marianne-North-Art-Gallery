@@ -98,7 +98,37 @@ static void pushHistory(const Artwork& a, uint8_t* jpg, size_t len) {
   ++histCount;
 }
 
-static void showEntry(const HistoryEntry& e) {
+static bool loadSdEntry(HistoryEntry& e) {
+  if (e.jpg || e.art.imagePath.length() == 0) return e.jpg != nullptr;
+  File file = SD.open(e.art.imagePath, FILE_READ);
+  if (!file) return false;
+  size_t len = file.size();
+  if (len < 4 || len > ART_MAX_IMAGE_BYTES) {
+    file.close();
+    return false;
+  }
+  uint8_t* buf = (uint8_t*)ps_malloc(len);
+  if (!buf) {
+    file.close();
+    return false;
+  }
+  size_t readLen = file.read(buf, len);
+  file.close();
+  if (readLen != len || buf[0] != 0xFF || buf[1] != 0xD8 ||
+      buf[len - 2] != 0xFF || buf[len - 1] != 0xD9) {
+    free(buf);
+    return false;
+  }
+  e.jpg = buf;
+  e.jpgLen = len;
+  return true;
+}
+
+static void showEntry(HistoryEntry& e) {
+  if (!e.art.fromOnline && !loadSdEntry(e)) {
+    ui::showPlaceholder("SD image unavailable");
+    return;
+  }
   ui::showArtwork(e.art, e.jpg, e.jpgLen, e.art.fromOnline ? "ONLINE" : "SD");
 }
 
