@@ -72,21 +72,20 @@ void ui::showPlaceholder(const char* msg) {
   M5.Display.drawString(msg, W / 2, H / 2 + 6);
 }
 
-static int imagePanX = 0;
+static bool zoomed = false;
 
 static bool drawCurrentImage(const Artwork& art, const uint8_t* jpg, size_t jpgLen) {
   const int W = M5.Display.width();
   const int H = M5.Display.height();
-  // 大图按 800px 画布绘制, 通过负的目标 x 显示不同横向区域。
-  const int imageWidth = 800;
-  const int imageHeight = 594;
+  const int imageWidth = zoomed ? 800 : W;
+  const int imageHeight = zoomed ? 594 : H;
   bool drawn = false;
   if (jpg && jpgLen) {
-    drawn = M5.Display.drawJpg(jpg, jpgLen, -imagePanX, 0, imageWidth, imageHeight,
+    drawn = M5.Display.drawJpg(jpg, jpgLen, 0, 0, imageWidth, imageHeight,
                                0, 0, 1.0f, 1.0f, MC_DATUM);
   } else {
-    drawn = M5.Display.drawJpgFile(art.imagePath.c_str(), -imagePanX, 0, imageWidth,
-                                    imageHeight, 0, 0, 1.0f, 1.0f, MC_DATUM);
+    drawn = M5.Display.drawJpgFile(art.imagePath.c_str(), 0, 0, imageWidth,
+                                   imageHeight, 0, 0, 1.0f, 1.0f, MC_DATUM);
   }
   return drawn;
 }
@@ -95,7 +94,7 @@ void ui::showArtwork(const Artwork& art, const uint8_t* jpg, size_t jpgLen,
                      const char* sourceTag) {
   const int W = M5.Display.width();
   const int H = M5.Display.height();
-  imagePanX = 0;
+  zoomed = false;
   M5.Display.fillScreen(TFT_BLACK);
 
   bool drawn = drawCurrentImage(art, jpg, jpgLen);
@@ -129,16 +128,16 @@ void ui::showArtwork(const Artwork& art, const uint8_t* jpg, size_t jpgLen,
   M5.Display.drawString(tag, W - 4, H - barH + 22);
 }
 
-void ui::panArtwork(const Artwork& art, const uint8_t* jpg, size_t jpgLen,
-                    const char* sourceTag, int deltaX) {
-  const int W = M5.Display.width();
-  const int H = M5.Display.height();
-  imagePanX = constrain(imagePanX + deltaX, 0, 480);
+void ui::toggleZoom(const Artwork& art, const uint8_t* jpg, size_t jpgLen,
+                    const char* sourceTag) {
+  zoomed = !zoomed;
   M5.Display.fillScreen(TFT_BLACK);
   if (!drawCurrentImage(art, jpg, jpgLen)) {
     showPlaceholder("Decode failed");
     return;
   }
+  const int W = M5.Display.width();
+  const int H = M5.Display.height();
   const int barH = 44;
   M5.Display.fillRect(0, H - barH, W, barH, TFT_BLACK);
   M5.Display.drawFastHLine(0, H - barH, W, TFT_DARKGREY);

@@ -206,27 +206,21 @@ void loop() {
   M5.update();
   imu.update();
 
-  // 左右倾斜平移当前大图, 触摸负责切换画作。
-  if (histCount > 0 && imu.consumeTiltLeft()) {
-    const HistoryEntry& current = hist[histCount - 1];
-    ui::panArtwork(current.art, current.jpg, current.jpgLen,
-                   current.art.fromOnline ? "ONLINE" : "SD", -80);
+  // 左右倾斜切换画作; 触摸用于放大/缩小当前画面。
+  if (imu.consumeTiltLeft()) {
+    showPrevious();
   }
-  if (histCount > 0 && imu.consumeTiltRight()) {
-    const HistoryEntry& current = hist[histCount - 1];
-    ui::panArtwork(current.art, current.jpg, current.jpgLen,
-                   current.art.fromOnline ? "ONLINE" : "SD", 80);
+  if (imu.consumeTiltRight()) {
+    showNextRandom();
   }
 
-  // 触摸辅助: 左半屏=上一张, 右半屏=下一张
+  // 单击屏幕切换适合屏幕/放大模式。
   if (M5.Touch.getCount()) {
     const auto& t = M5.Touch.getDetail();
-    if (t.wasClicked()) {
-      if (t.x < M5.Display.width() / 2) {
-        showPrevious();
-      } else {
-        showNextRandom();
-      }
+    if (t.wasClicked() && histCount > 0) {
+      const HistoryEntry& current = hist[histCount - 1];
+      ui::toggleZoom(current.art, current.jpg, current.jpgLen,
+                     current.art.fromOnline ? "ONLINE" : "SD");
     }
   }
 
