@@ -32,6 +32,10 @@ static int histCount = 0;
 static bool wifiConnected = false;
 static uint32_t lastAutoMs = 0;
 static bool dailyOnlineAttempted = false;
+static bool touchLongHandled = false;
+static uint32_t touchStartedMs = 0;
+static int touchStartX = 0;
+static int touchStartY = 0;
 
 static int currentDay() {
   time_t now = time(nullptr);
@@ -206,18 +210,30 @@ void loop() {
   M5.update();
   imu.update();
 
-  // 仅使用触摸控制: 左半屏上一张, 右半屏下一张。
+  // 长按图片区域进入/退出放大; 短按底部左右区域翻页。
+  const auto& touch = M5.Touch.getDetail();
   if (M5.Touch.getCount()) {
-    const auto& t = M5.Touch.getDetail();
-    if (t.wasClicked()) {
-      if (t.y < M5.Display.height() / 2 && histCount > 0) {
-        const HistoryEntry& current = hist[histCount - 1];
-        ui::toggleZoom(current.art, current.jpg, current.jpgLen,
-                       current.art.fromOnline ? "ONLINE" : "SD");
-      } else if (t.x < M5.Display.width() / 2) {
-        showPrevious();
-      } else {
-        showNextRandom();
+    if (touch.wasPressed()) {
+      touchStartedMs = millis();
+      touchStartX = touch.x;
+      touchStartY = touch.y;
+      touchLongHandled = false;
+    }
+    if (!touchLongHandled && touch.isPressed() &&
+        millis() - touchStartedMs >= 600 && touchStartY < M5.Display.height() - 44 &&
+        histCount > 0) {
+      const HistoryEntry& current = hist[histCount - 1];
+      ui::toggleZoom(current.art, current.jpg, current.jpgLen,
+                     current.art.fromOnline ? "ONLINE" : "SD");
+      touchLongHandled = true;
+    }
+    if (touch.wasReleased() && !touchLongHandled) {
+      if (touchStartY >= M5.Display.height() - 44) {
+        if (touchStartX < M5.Display.width() / 2) {
+          showPrevious();
+        } else {
+          showNextRandom();
+        }
       }
     }
   }
