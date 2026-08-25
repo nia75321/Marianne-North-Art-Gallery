@@ -32,7 +32,6 @@ static int histCount = 0;
 static bool wifiConnected = false;
 static uint32_t lastAutoMs = 0;
 static bool dailyOnlineAttempted = false;
-static int dailyOnlineDay = -1;
 
 static int currentDay() {
   time_t now = time(nullptr);
@@ -40,6 +39,32 @@ static int currentDay() {
   if (now < 100000) return -1;
   localtime_r(&now, &local);
   return local.tm_yday;
+}
+
+static String dailyMarkerPath() {
+  time_t now = time(nullptr);
+  struct tm local{};
+  if (now < 100000) return "";
+  localtime_r(&now, &local);
+  char name[48];
+  snprintf(name, sizeof(name), "%s/daily-%04d%02d%02d.done", ART_SD_CACHE,
+           local.tm_year + 1900, local.tm_mon + 1, local.tm_mday);
+  return String(name);
+}
+
+static bool downloadedToday() {
+  String marker = dailyMarkerPath();
+  return marker.length() > 0 && SD.exists(marker);
+}
+
+static void markDownloadedToday() {
+  String marker = dailyMarkerPath();
+  if (marker.length() == 0 || !art.sdReady()) return;
+  File f = SD.open(marker, FILE_WRITE);
+  if (f) {
+    f.print("ok");
+    f.close();
+  }
 }
 
 static void syncClock() {
@@ -99,11 +124,11 @@ static void showNextRandom() {
 
   // 每天首次切换时在线获取一幅新画; 成功后同时缓存到 SD。
   int day = currentDay();
-  bool shouldFetchToday = day >= 0 && (day != dailyOnlineDay || !dailyOnlineAttempted);
+  bool shouldFetchToday = day >= 0 && !downloadedToday() && !dailyOnlineAttempted;
   if (WiFi.status() == WL_CONNECTED && shouldFetchToday) {
     dailyOnlineAttempted = true;
     if (art.fetchOnlineRandom(a, &jpg, &len)) {
-      dailyOnlineDay = day;
+      markDownloadedToday();
       pushHistory(a, jpg, len);
       showEntry(hist[histCount - 1]);
       return;
@@ -118,14 +143,6 @@ static void showNextRandom() {
     return;
   }
 
-  // 时间尚未同步时仍尝试一次在线获取, 不阻塞离线显示。
-  if (WiFi.status() == WL_CONNECTED && day < 0 && !dailyOnlineAttempted &&
-      art.fetchOnlineRandom(a, &jpg, &len)) {
-    dailyOnlineAttempted = true;
-    pushHistory(a, jpg, len);
-    showEntry(hist[histCount - 1]);
-    return;
-  }
   art.releaseJpg(jpg);
   ui::toast("No artwork available");
 }
