@@ -117,34 +117,37 @@ static void showPrevious() {
 }
 
 /** 右倾斜 / 自动轮播: 随机下一张 (联网优先, 否则 SD) */
-static void showNextRandom() {
+static bool showSdRandom() {
+  Artwork a;
+  if (!art.sdReady() || !art.fetchSdRandom(a)) return false;
+  pushHistory(a, nullptr, 0);
+  showEntry(hist[histCount - 1]);
+  return true;
+}
+
+static void tryDailyOnline() {
+  if (WiFi.status() != WL_CONNECTED || dailyOnlineAttempted) return;
+  int day = currentDay();
+  if (day < 0 || downloadedToday()) return;
+
+  dailyOnlineAttempted = true;
   Artwork a;
   uint8_t* jpg = nullptr;
   size_t len = 0;
-
-  // SD 优先: 当天已有下载标记时不再请求网络; 仅当天首次成功时在线更新。
-  int day = currentDay();
-  bool shouldFetchToday = day >= 0 && !downloadedToday() && !dailyOnlineAttempted;
-  if (WiFi.status() == WL_CONNECTED && shouldFetchToday) {
-    dailyOnlineAttempted = true;
-    if (art.fetchOnlineRandom(a, &jpg, &len)) {
-      markDownloadedToday();
-      pushHistory(a, jpg, len);
-      showEntry(hist[histCount - 1]);
-      return;
-    }
+  if (art.fetchOnlineRandom(a, &jpg, &len)) {
+    markDownloadedToday();
+    pushHistory(a, jpg, len);
+    showEntry(hist[histCount - 1]);
+  } else {
     art.releaseJpg(jpg);
   }
+}
 
-  // 当天在线获取失败或已经获取过后, 翻页直接使用 SD, 避免重复网络请求。
-  if (art.sdReady() && art.fetchSdRandom(a)) {
-    pushHistory(a, nullptr, 0);
-    showEntry(hist[histCount - 1]);
-    return;
+static void showNextRandom() {
+  if (!showSdRandom()) {
+    tryDailyOnline();
+    if (histCount == 0) ui::toast("No artwork available");
   }
-
-  art.releaseJpg(jpg);
-  ui::toast("No artwork available");
 }
 
 /* ---------------- Wi-Fi ---------------- */
@@ -162,7 +165,8 @@ static void ensureWifi() {
   wifiConnected = (WiFi.status() == WL_CONNECTED);
   if (wifiConnected) {
     log_i("WiFi connected: %s", WiFi.localIP().toString().c_str());
-    ui::toast("WiFi connected");
+    syncClock();
+    tryDailyOnline();
   }
 }
 
@@ -180,26 +184,14 @@ void setup() {
   imu.begin();
   randomSeed(esp_random());
 
-  // 首次连接 Wi-Fi (最多等 10s)
+  // Wi-Fi 只在后台连接, 不阻塞 SD 首屏。
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ART_WIFI_SSID, ART_WIFI_PASSWORD);
-  uint32_t t0 = millis();
-  while (WiFi.status() != WL_CONNECTED && millis() - t0 < 10000) {
-    delay(100);
-  }
-  wifiConnected = (WiFi.status() == WL_CONNECTED);
-  log_i("WiFi %s, status=%d, ip=%s", wifiConnected ? "connected" : "offline (SD mode)",
-        WiFi.status(), WiFi.localIP().toString().c_str());
-  if (wifiConnected) {
-    syncClock();
-    ui::toast(WiFi.localIP().toString().c_str());
-  } else {
-    ui::toast("Offline (SD)");
-  }
-
-  delay(600);
   lastAutoMs = millis();
-  showNextRandom();
+  if (!showSdRandom()) {
+    ui::toast("No artwork available");
+  }
+  ensureWifi();
+  tryDailyOnline();
 }
 
 void loop() {
@@ -218,8 +210,9 @@ void loop() {
     }
   }
 
-  // Wi-Fi 断线重连 (后台 30s 一次)
+  // Wi-Fi 断线重连; 在线更新永远不阻塞 SD 首屏。
   ensureWifi();
+  tryDailyOnline();
 
   delay(20);
 }
