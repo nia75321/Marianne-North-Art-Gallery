@@ -388,7 +388,11 @@ void ArtProvider::scanSdDir(const char* dir, String* files, int& count) {
       String path = f.name();
       // Arduino-ESP32 3.x may return an absolute name from openNextFile().
       // Do not prepend dir twice (e.g. /art/cache//art/cache/photo.jpg).
-      if (!path.startsWith("/")) path = String(dir) + "/" + path;
+        if (!path.startsWith("/")) path = String(dir) + "/" + path;
+      // openNextFile() can return /art/cache/file.jpg even while scanning /art;
+      // only accept files that are actually inside the directory being scanned.
+      String prefix = String(dir) + "/";
+      if (!path.startsWith(prefix)) continue;
       files[count++] = path;
     }
     f.close();
@@ -433,7 +437,7 @@ bool ArtProvider::fetchSdRandom(Artwork& out) {
   String* files = new (std::nothrow) String[ART_SD_MAX_FILES];
   if (!files) return false;
   int count = 0;
-  scanSdDir(ART_SD_ROOT, files, count);
+  // 在线下载的画作统一保存在 cache, 只扫描这里，避免目录路径混淆。
   scanSdDir(ART_SD_CACHE, files, count);
   if (count == 0) {
     log_w("No art under %s", ART_SD_ROOT);
@@ -445,6 +449,9 @@ bool ArtProvider::fetchSdRandom(Artwork& out) {
   for (int attempt = 0; attempt < count; ++attempt) {
     int index = random(count);
     String path = files[index];
+    if (path.indexOf("/cache/") < 0 && path.startsWith(String(ART_SD_ROOT) + "/")) {
+      continue;
+    }
     File image = SD.open(path, FILE_READ);
     bool valid = false;
     if (image && image.size() >= 4) {
