@@ -72,19 +72,33 @@ void ui::showPlaceholder(const char* msg) {
   M5.Display.drawString(msg, W / 2, H / 2 + 6);
 }
 
+static int imagePanX = 0;
+
+static bool drawCurrentImage(const Artwork& art, const uint8_t* jpg, size_t jpgLen) {
+  const int W = M5.Display.width();
+  const int H = M5.Display.height();
+  // 大图按 800px 画布绘制, 通过负的目标 x 显示不同横向区域。
+  const int imageWidth = 800;
+  const int imageHeight = 594;
+  bool drawn = false;
+  if (jpg && jpgLen) {
+    drawn = M5.Display.drawJpg(jpg, jpgLen, -imagePanX, 0, imageWidth, imageHeight,
+                               0, 0, 1.0f, 1.0f, MC_DATUM);
+  } else {
+    drawn = M5.Display.drawJpgFile(art.imagePath.c_str(), -imagePanX, 0, imageWidth,
+                                    imageHeight, 0, 0, 1.0f, 1.0f, MC_DATUM);
+  }
+  return drawn;
+}
+
 void ui::showArtwork(const Artwork& art, const uint8_t* jpg, size_t jpgLen,
                      const char* sourceTag) {
   const int W = M5.Display.width();
   const int H = M5.Display.height();
+  imagePanX = 0;
   M5.Display.fillScreen(TFT_BLACK);
 
-  // 1. 直接让 M5GFX 解码并显示 (库内部会处理缩放)
-  bool drawn = false;
-  if (jpg && jpgLen) {
-    drawn = M5.Display.drawJpg(jpg, jpgLen, 0, 0, W, H, 0, 0, 1.0f, 1.0f, MC_DATUM);
-  } else {
-    drawn = M5.Display.drawJpgFile(art.imagePath.c_str(), 0, 0, W, H, 0, 0, 1.0f, 1.0f, MC_DATUM);
-  }
+  bool drawn = drawCurrentImage(art, jpg, jpgLen);
   if (!drawn) {
     showPlaceholder("Decode failed");
     return;
@@ -108,6 +122,35 @@ void ui::showArtwork(const Artwork& art, const uint8_t* jpg, size_t jpgLen,
       fitText(art.artist.length() ? art.artist.c_str() : "Unknown artist", 150), 4,
       H - barH + 22);
 
+  String tag = sourceTag;
+  if (art.year.length()) tag += "  " + art.year;
+  M5.Display.setTextDatum(MR_DATUM);
+  M5.Display.setTextColor(TFT_GREEN, TFT_BLACK);
+  M5.Display.drawString(tag, W - 4, H - barH + 22);
+}
+
+void ui::panArtwork(const Artwork& art, const uint8_t* jpg, size_t jpgLen,
+                    const char* sourceTag, int deltaX) {
+  const int W = M5.Display.width();
+  const int H = M5.Display.height();
+  imagePanX = constrain(imagePanX + deltaX, 0, 480);
+  M5.Display.fillScreen(TFT_BLACK);
+  if (!drawCurrentImage(art, jpg, jpgLen)) {
+    showPlaceholder("Decode failed");
+    return;
+  }
+  const int barH = 44;
+  M5.Display.fillRect(0, H - barH, W, barH, TFT_BLACK);
+  M5.Display.drawFastHLine(0, H - barH, W, TFT_DARKGREY);
+  M5.Display.setTextDatum(ML_DATUM);
+  M5.Display.setFont(&fonts::Font2);
+  M5.Display.setTextColor(TFT_WHITE, TFT_BLACK);
+  M5.Display.drawString(fitText(art.title.length() ? art.title.c_str() : "(Untitled)", W - 8),
+                        4, H - barH + 2);
+  M5.Display.setFont(&fonts::Font0);
+  M5.Display.setTextColor(TFT_LIGHTGREY, TFT_BLACK);
+  M5.Display.drawString(fitText(art.artist.length() ? art.artist.c_str() : "Unknown artist", 150),
+                        4, H - barH + 22);
   String tag = sourceTag;
   if (art.year.length()) tag += "  " + art.year;
   M5.Display.setTextDatum(MR_DATUM);

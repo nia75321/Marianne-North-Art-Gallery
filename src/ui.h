@@ -18,6 +18,10 @@ void showBoot();
 /** 全屏显示一幅画作 + 底部信息栏 */
 void showArtwork(const Artwork& art, const uint8_t* jpg, size_t jpgLen, const char* sourceTag);
 
+/** 将当前大图视口左右移动一段距离。 */
+void panArtwork(const Artwork& art, const uint8_t* jpg, size_t jpgLen, const char* sourceTag,
+               int deltaX);
+
 /** 无法显示时占位提示 */
 void showPlaceholder(const char* msg);
 

@@ -206,12 +206,16 @@ void loop() {
   M5.update();
   imu.update();
 
-  // IMU 手势: 左倾=上一张, 右倾=下一张
-  if (imu.consumeTiltLeft()) {
-    showPrevious();
+  // 左右倾斜平移当前大图, 触摸负责切换画作。
+  if (histCount > 0 && imu.consumeTiltLeft()) {
+    const HistoryEntry& current = hist[histCount - 1];
+    ui::panArtwork(current.art, current.jpg, current.jpgLen,
+                   current.art.fromOnline ? "ONLINE" : "SD", -80);
   }
-  if (imu.consumeTiltRight()) {
-    showNextRandom();
+  if (histCount > 0 && imu.consumeTiltRight()) {
+    const HistoryEntry& current = hist[histCount - 1];
+    ui::panArtwork(current.art, current.jpg, current.jpgLen,
+                   current.art.fromOnline ? "ONLINE" : "SD", 80);
   }
 
   // 触摸辅助: 左半屏=上一张, 右半屏=下一张

@@ -2,13 +2,14 @@ name: Daily Painting
 
 on:
   schedule:
-    # 每天 UTC 00:10 运行 = 北京时间 08:10
     - cron: "10 0 * * *"
-  # 也可以在 GitHub 仓库 Actions 页面手动点击 "Run workflow" 立即换画
   workflow_dispatch:
 
 permissions:
   contents: write
+
+env:
+  COS_HOST: "marianne-north-art-1474440715.cos.ap-shanghai.myqcloud.com"
 
 jobs:
   paint:
@@ -19,18 +20,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Show run context
-        run: |
-          echo "Commit:   $(git rev-parse --short HEAD)"
-          echo "Branch:   ${{ github.ref_name }}"
-          echo "Date:     $(date -u '+%Y-%m-%d %H:%M UTC')"
-
-      # 先同步到远程最新代码再运行, 避免基于旧提交生成
       - name: Sync to latest main
         run: |
           git fetch origin
           git reset --hard origin/main
-          echo "Now at:   $(git rev-parse --short HEAD)"
 
       - name: Run daily painting bot
         env:
@@ -38,26 +31,31 @@ jobs:
           BRANCH: ${{ github.ref_name }}
         run: python3 tools/daily_painting.py
 
-      - name: Commit and push to GitHub
+      - name: Install COSCMD
+        run: python3 -m pip install --user coscmd
+
+      - name: Upload gallery to Tencent COS
+        env:
+          SECRET_ID: ${{ secrets.TENCENT_SECRET_ID }}
+          SECRET_KEY: ${{ secrets.TENCENT_SECRET_KEY }}
+          COS_BUCKET: ${{ secrets.TENCENT_COS_BUCKET }}
+          COS_REGION: ${{ secrets.TENCENT_COS_REGION }}
+        run: |
+          test -n "$SECRET_ID" && test -n "$SECRET_KEY"
+          test -n "$COS_BUCKET" && test -n "$COS_REGION"
+          python3 -m coscmd config -a "$SECRET_ID" -s "$SECRET_KEY" -r "$COS_REGION" -b "$COS_BUCKET"
+          for file in output/*; do
+            python3 -m coscmd upload "$file" "/$(basename "$file")"
+          done
+
+      - name: Commit and push archive to GitHub
         run: |
           git config user.name "daily-painting-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add output/
-          if git diff --quiet HEAD -- output/; then
-            echo "No new painting, nothing to commit."
-          else
+          if ! git diff --quiet HEAD -- output/; then
             git commit -m "Daily painting $(date -u +%F)"
           fi
-          # 远程若被其他提交领先(手动推送/并发运行), rebase 到最新再推
           git fetch origin
-          git rebase -X theirs origin/"${{ github.ref_name }}"
-          git push origin "${{ github.ref_name }}"
-
-      - name: Push to Gitee (mirror, 国内访问)
-        if: env.GITEE_USERNAME != '' && env.GITEE_TOKEN != ''
-        env:
-          GITEE_USERNAME: ${{ secrets.GITEE_USERNAME }}
-          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
-        run: |
-          git remote add gitee "https://${GITEE_USERNAME}:${GITEE_TOKEN}@gitee.com/${GITEE_USERNAME}/Marianne-North-Art-Gallery.git"
-          git push gitee "${{ github.ref_name }}"
+          git rebase -X theirs origin/main
+          git push origin main

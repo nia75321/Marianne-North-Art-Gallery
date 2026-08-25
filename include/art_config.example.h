@@ -40,7 +40,7 @@
  *     #define ART_GALLERY_JSON_URL "https://cdn.jsdelivr.net/gh/你的用户名/仓库名@main/output/gallery.json"
  * 手动立即换画: 仓库 Actions 页面点 "Run workflow"。
  * ------------------------------------------------------------------ */
-#define ART_GALLERY_JSON_URL    ""
+#define ART_GALLERY_JSON_URL    "https://marianne-north-art-1474440715.cos.ap-shanghai.myqcloud.com/gallery.json"
 
 /* ------------------------------------------------------------------ *
  * IMU 左右倾斜手势
