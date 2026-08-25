@@ -149,7 +149,7 @@ static void showPrevious() {
 /** 右倾斜 / 自动轮播: 随机下一张 (联网优先, 否则 SD) */
 static bool showSdRandom() {
   Artwork a;
-  if (!art.sdReady() || !art.fetchSdRandom(a)) return false;
+  if (!art.sdReady() || !art.fetchSdNext(a)) return false;
   pushHistory(a, nullptr, 0);
   showEntry(hist[histCount - 1]);
   return true;
