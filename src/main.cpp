@@ -16,6 +16,7 @@
 // 注意: SD.h/HTTPClient.h 必须在 M5Unified.h(M5GFX.h) 之前包含
 #include <M5Unified.h>
 #include <WiFi.h>
+#include <time.h>
 #include "art_config.h"
 #include "art_models.h"
 #include "art_provider.h"
@@ -30,6 +31,24 @@ static int histCount = 0;
 
 static bool wifiConnected = false;
 static uint32_t lastAutoMs = 0;
+static bool dailyOnlineAttempted = false;
+static int dailyOnlineDay = -1;
+
+static int currentDay() {
+  time_t now = time(nullptr);
+  struct tm local{};
+  if (now < 100000) return -1;
+  localtime_r(&now, &local);
+  return local.tm_yday;
+}
+
+static void syncClock() {
+  configTime(8 * 3600, 0, "ntp.aliyun.com", "pool.ntp.org");
+  uint32_t started = millis();
+  while (time(nullptr) < 100000 && millis() - started < 3000) {
+    delay(100);
+  }
+}
 static uint32_t lastWifiRetryMs = 0;
 
 /* ---------------- 历史记录 ---------------- */
@@ -78,15 +97,31 @@ static void showNextRandom() {
   uint8_t* jpg = nullptr;
   size_t len = 0;
 
-  // SD 优先: 避免每次翻页都访问不稳定的在线源并造成画面闪烁。
+  // 每天首次切换时在线获取一幅新画; 成功后同时缓存到 SD。
+  int day = currentDay();
+  bool shouldFetchToday = day >= 0 && (day != dailyOnlineDay || !dailyOnlineAttempted);
+  if (WiFi.status() == WL_CONNECTED && shouldFetchToday) {
+    dailyOnlineAttempted = true;
+    if (art.fetchOnlineRandom(a, &jpg, &len)) {
+      dailyOnlineDay = day;
+      pushHistory(a, jpg, len);
+      showEntry(hist[histCount - 1]);
+      return;
+    }
+    art.releaseJpg(jpg);
+  }
+
+  // 当天在线获取失败或已经获取过后, 翻页直接使用 SD, 避免重复网络请求。
   if (art.sdReady() && art.fetchSdRandom(a)) {
     pushHistory(a, nullptr, 0);
     showEntry(hist[histCount - 1]);
     return;
   }
 
-  // SD 为空时才在线获取; 成功后由 ArtProvider 缓存到 SD。
-  if (WiFi.status() == WL_CONNECTED && art.fetchOnlineRandom(a, &jpg, &len)) {
+  // 时间尚未同步时仍尝试一次在线获取, 不阻塞离线显示。
+  if (WiFi.status() == WL_CONNECTED && day < 0 && !dailyOnlineAttempted &&
+      art.fetchOnlineRandom(a, &jpg, &len)) {
+    dailyOnlineAttempted = true;
     pushHistory(a, jpg, len);
     showEntry(hist[histCount - 1]);
     return;
@@ -139,6 +174,7 @@ void setup() {
   log_i("WiFi %s, status=%d, ip=%s", wifiConnected ? "connected" : "offline (SD mode)",
         WiFi.status(), WiFi.localIP().toString().c_str());
   if (wifiConnected) {
+    syncClock();
     ui::toast(WiFi.localIP().toString().c_str());
   } else {
     ui::toast("Offline (SD)");
