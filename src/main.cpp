@@ -32,6 +32,7 @@ static int histCount = 0;
 static bool wifiConnected = false;
 static uint32_t lastAutoMs = 0;
 static bool dailyOnlineAttempted = false;
+static bool randomMode = false;
 
 static int currentDay() {
   time_t now = time(nullptr);
@@ -146,13 +147,45 @@ static void showPrevious() {
   lastAutoMs = millis();
 }
 
-/** 右倾斜 / 自动轮播: 随机下一张 (联网优先, 否则 SD) */
-static bool showSdRandom() {
+/** 清空历史并重新进入"今天"状态: 关闭随机模式, 从最新缓存画作开始。 */
+static void resetToToday() {
+  while (histCount > 0) {
+    freeEntry(hist[histCount - 1]);
+    --histCount;
+  }
+  randomMode = false;
+  art.clearSdLastShown();
+}
+
+/** 按日期顺序显示 SD 画作 */
+static bool showSdNext() {
   Artwork a;
   if (!art.sdReady() || !art.fetchSdNext(a)) return false;
   pushHistory(a, nullptr, 0);
   showEntry(hist[histCount - 1]);
   return true;
+}
+
+/** 随机显示任意一张 SD 画作 */
+static bool showSdRandom() {
+  Artwork a;
+  if (!art.sdReady() || !art.fetchSdRandom(a)) return false;
+  pushHistory(a, nullptr, 0);
+  showEntry(hist[histCount - 1]);
+  return true;
+}
+
+/** 用力晃动: 在随机日期 / 按日期顺序两种模式间切换。 */
+static void toggleRandomMode() {
+  if (randomMode) {
+    resetToToday();
+    ui::toast("Date order");
+    if (!showSdNext()) ui::toast("No artwork available");
+  } else {
+    randomMode = true;
+    ui::toast("Random date");
+    if (!showSdRandom()) ui::toast("No artwork available");
+  }
 }
 
 static void tryDailyOnline() {
@@ -174,8 +207,9 @@ static void tryDailyOnline() {
   }
 }
 
-static void showNextRandom() {
-  if (!showSdRandom()) {
+static void showNext() {
+  bool ok = randomMode ? showSdRandom() : showSdNext();
+  if (!ok) {
     tryDailyOnline();
     if (histCount == 0) ui::toast("No artwork available");
   }
@@ -218,7 +252,8 @@ void setup() {
   // Wi-Fi 只在后台连接, 不阻塞 SD 首屏。
   WiFi.mode(WIFI_STA);
   lastAutoMs = millis();
-  if (!showSdRandom()) {
+  resetToToday();
+  if (!showSdNext()) {
     ui::toast("No artwork available");
   }
   ensureWifi();
@@ -229,14 +264,19 @@ void loop() {
   M5.update();
   imu.update();
 
-  // 仅使用触摸左右区域翻页。
+  // 用力晃动: 切换随机日期/按日期顺序模式。
+  if (imu.consumeShake()) {
+    toggleRandomMode();
+  }
+
+  // 触摸左右区域翻页。
   if (M5.Touch.getCount()) {
     const auto& touch = M5.Touch.getDetail();
     if (touch.wasClicked()) {
       if (touch.x < M5.Display.width() / 2) {
         showPrevious();
       } else {
-        showNextRandom();
+        showNext();
       }
     }
   }

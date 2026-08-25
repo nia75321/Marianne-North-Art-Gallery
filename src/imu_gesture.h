@@ -30,6 +30,16 @@ class ImuGesture {
     return v;
   }
 
+  /** 取事件: 用力晃动一次返回一次 true */
+  bool consumeShake() {
+    bool v = shake_;
+    shake_ = false;
+    return v;
+  }
+
+  /** 用力晃动时检测幅度阈值, 供外部调节 */
+  void setShakeThreshold(float g) { shakeThresholdG_ = g; }
+
  private:
   enum class State : uint8_t { kFlat, kTiltLeft, kTiltRight };
 
@@ -40,4 +50,8 @@ class ImuGesture {
   uint32_t cooldownUntil_ = 0;
   bool     left_ = false;
   bool     right_ = false;
+
+  bool     shake_ = false;
+  float    shakeThresholdG_ = 1.7f;
+  uint32_t shakeQuietUntil_ = 0;
 };

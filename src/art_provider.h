@@ -32,6 +32,9 @@ class ArtProvider {
   /** 从 SD 卡按文件名顺序取下一张画作 */
   bool fetchSdNext(Artwork& out);
 
+  /** 重置顺序模式指针, 下次 fetchSdNext 回到最早的画作 */
+  void clearSdLastShown() { sdLastShown_ = ""; }
+
   static void releaseJpg(uint8_t* buf) {
     if (buf) free(buf);
   }

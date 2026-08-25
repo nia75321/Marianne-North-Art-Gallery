@@ -296,7 +296,7 @@ def main():
         json.dump(items, f, ensure_ascii=False, indent=2)
     print(f"  ✓ 已生成 {GALLERY_FILE} ({len(items)} 条)")
 
-    # 5. 清理旧图片
+    # 5. 清理旧图片 (保留最近 30 张, 避免 GitHub 仓库过大)
     existing = [f for f in os.listdir(OUT_DIR) if re.match(r"painting-\d{8}\.jpg$", f)]
     existing.sort(reverse=True)
     for f in existing[KEEP_FILES:]:

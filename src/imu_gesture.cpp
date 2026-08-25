@@ -32,6 +32,11 @@ void ImuGesture::update() {
 
   // 合加速度明显偏离 1g 时忽略 (快速晃动 / 跌落)
   float g = sqrtf(fx_ * fx_ + fy_ * fy_ + fz_ * fz_);
+  uint32_t now2 = millis();
+  if (g > shakeThresholdG_ && now2 >= shakeQuietUntil_ && !shake_) {
+    shake_ = true;
+    shakeQuietUntil_ = now2 + 1000;  // 晃动后 1s 内不再重复触发
+  }
   if (g < 0.5f || g > 1.6f) return;
 
   // ---- 计算倾斜角度 ----
