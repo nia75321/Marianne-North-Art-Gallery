@@ -174,7 +174,6 @@ bool ArtProvider::downloadImage(const String& url, uint8_t** outBuf, size_t* out
 
   if (total != cap && size > 0 && url.indexOf("gitee.com") >= 0) {
     // Gitee 匿名下载每连接只给约 15KB 就断连, 改用 Range 小分块拼接
-    log_w("Gitee cut at %u/%u, resuming with Range chunks", total, cap);
     if (!rangeChunkDownload(url, buf, cap)) {
       free(buf);
       return false;

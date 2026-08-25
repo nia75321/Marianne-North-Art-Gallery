@@ -82,7 +82,6 @@ static void showNextRandom() {
 
   if (WiFi.status() == WL_CONNECTED && !onlineLoadedThisBoot) {
     onlineLoadedThisBoot = true;
-    ui::toast("Online fetch...");
     if (art.fetchOnlineRandom(a, &jpg, &len)) {
       pushHistory(a, jpg, len);
       showEntry(hist[histCount - 1]);
