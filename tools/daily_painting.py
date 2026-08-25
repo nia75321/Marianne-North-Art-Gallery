@@ -24,8 +24,9 @@ import urllib.request
 
 API = "https://commons.wikimedia.org/w/api.php"
 CATEGORY = "Category:Paintings by Marianne North"
-# 屏幕只有 320x240, 480px 缩略图足够且体积小(约60KB), 下载更快更稳
-WIDTH = 480
+# 屏幕只有 320x240, 160px 缩略图可将单张 JPEG 控制在 Gitee raw 的单连接限制内
+# 设备会放大显示, 优先保证国内网络能完整下载
+WIDTH = 160
 OUT_DIR = "output"
 ARTIST = "Marianne North"
 USER_AGENT = "MarianneNorthDailyBot/1.0 (GitHub Actions; personal art gallery)"
