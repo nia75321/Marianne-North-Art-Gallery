@@ -32,7 +32,9 @@ jobs:
         run: python3 tools/daily_painting.py
 
       - name: Install COSCMD
-        run: python3 -m pip install --user coscmd
+        run: |
+          python3 -m pip install --user coscmd
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Upload gallery to Tencent COS
         env:
@@ -43,9 +45,9 @@ jobs:
         run: |
           test -n "$SECRET_ID" && test -n "$SECRET_KEY"
           test -n "$COS_BUCKET" && test -n "$COS_REGION"
-          python3 -m coscmd config -a "$SECRET_ID" -s "$SECRET_KEY" -r "$COS_REGION" -b "$COS_BUCKET"
+          coscmd config -a "$SECRET_ID" -s "$SECRET_KEY" -r "$COS_REGION" -b "$COS_BUCKET"
           for file in output/*; do
-            python3 -m coscmd upload "$file" "/$(basename "$file")"
+            coscmd upload "$file" "/$(basename "$file")"
           done
 
       - name: Commit and push archive to GitHub
