@@ -136,8 +136,9 @@ static void tryDailyOnline() {
   size_t len = 0;
   if (art.fetchOnlineRandom(a, &jpg, &len)) {
     markDownloadedToday();
-    pushHistory(a, jpg, len);
-    showEntry(hist[histCount - 1]);
+    // 在线缓冲已成功写入 SD; 释放 RAM 后从文件显示，避免大图缓冲解码失败。
+    art.releaseJpg(jpg);
+    showSdRandom();
   } else {
     art.releaseJpg(jpg);
   }
