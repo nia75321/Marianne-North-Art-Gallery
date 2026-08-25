@@ -345,11 +345,21 @@ bool ArtProvider::fetchOnlineRandom(Artwork& out, uint8_t** jpgBuf, size_t* jpgL
   return false;
 }
 
-bool ArtProvider::cacheToSd(const Artwork& art, const uint8_t* jpg, size_t len) {
-  if (!sdReady_) return false;
-  if (art.id.length() == 0 || art.id.indexOf('/') >= 0) return false;
+static String cacheKeyForArtwork(const Artwork& art) {
+  String key = art.id;
+  if (key.length() == 0) key = art.imagePath;
+  if (key.length() > 80) {
+    // URL 过长时取末尾文件名, 例如 painting-20260824.jpg
+    int slash = key.lastIndexOf('/');
+    if (slash >= 0) key = key.substring(slash + 1);
+  }
+  return sanitizeFileStem(key);
+}
 
-  String base = String(ART_SD_CACHE) + "/" + sanitizeFileStem(art.id);
+bool ArtProvider::cacheToSd(const Artwork& art, const uint8_t* jpg, size_t len) {
+  if (!sdReady_ || !jpg || len == 0) return false;
+
+  String base = String(ART_SD_CACHE) + "/" + cacheKeyForArtwork(art);
 
   File f = SD.open(base + ".jpg", FILE_WRITE);
   if (!f) return false;

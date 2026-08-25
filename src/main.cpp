@@ -29,6 +29,7 @@ static HistoryEntry hist[ART_HISTORY_SIZE];
 static int histCount = 0;
 
 static bool wifiConnected = false;
+static bool onlineLoadedThisBoot = false;
 static uint32_t lastAutoMs = 0;
 static uint32_t lastWifiRetryMs = 0;
 
@@ -79,7 +80,8 @@ static void showNextRandom() {
   uint8_t* jpg = nullptr;
   size_t len = 0;
 
-  if (wifiConnected) {
+  if (WiFi.status() == WL_CONNECTED && !onlineLoadedThisBoot) {
+    onlineLoadedThisBoot = true;
     ui::toast("Online fetch...");
     if (art.fetchOnlineRandom(a, &jpg, &len)) {
       pushHistory(a, jpg, len);
