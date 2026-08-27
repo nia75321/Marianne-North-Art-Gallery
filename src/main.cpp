@@ -166,13 +166,16 @@ static void toggleRandomMode() {
 /** 周期性检查腾讯云, 只下载 SD 上没有的新画作 */
 static void maybeSyncOnline() {
   if (WiFi.status() != WL_CONNECTED) return;
-  if (millis() - lastOnlineSyncMs < ART_ONLINE_CHECK_MS) return;
+  if (lastOnlineSyncMs != 0 && millis() - lastOnlineSyncMs < ART_ONLINE_CHECK_MS) return;
   lastOnlineSyncMs = millis();
 
+  log_i("Checking Tencent COS for new paintings...");
   int n = art.syncOnlineGallery(5);
   if (n > 0) {
     log_i("Downloaded %d new painting(s)", n);
     showSdLatest();
+  } else {
+    log_i("Gallery already up to date");
   }
 }
 
@@ -217,7 +220,7 @@ void setup() {
   // Wi-Fi 只在后台连接, 不阻塞 SD 首屏。
   WiFi.mode(WIFI_STA);
   lastAutoMs = millis();
-  lastOnlineSyncMs = millis();
+  lastOnlineSyncMs = 0;  // Wi-Fi 连上后立即检查一次腾讯云
   if (!showSdLatest()) {
     ui::toast("No artwork available");
   }
