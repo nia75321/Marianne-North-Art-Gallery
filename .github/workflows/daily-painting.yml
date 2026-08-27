@@ -2,7 +2,7 @@ name: Daily Painting
 
 on:
   schedule:
-    - cron: "10 0 * * *"
+    - cron: "10 */6 * * *"
   workflow_dispatch:
 
 permissions:
@@ -46,9 +46,9 @@ jobs:
           test -n "$SECRET_ID" && test -n "$SECRET_KEY"
           test -n "$COS_BUCKET" && test -n "$COS_REGION"
           coscmd config -a "$SECRET_ID" -s "$SECRET_KEY" -r "$COS_REGION" -b "$COS_BUCKET"
-          for file in output/*; do
-            coscmd upload "$file" "/$(basename "$file")"
-          done
+          # 只上传当天的新画作和 gallery.json，保留旧文件时间戳
+          coscmd upload output/painting-$(date -u +%Y%m%d).jpg /painting-$(date -u +%Y%m%d).jpg
+          coscmd upload output/gallery.json /gallery.json
 
       - name: Commit and push archive to GitHub
         run: |
