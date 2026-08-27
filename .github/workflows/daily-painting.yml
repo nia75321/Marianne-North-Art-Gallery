@@ -46,8 +46,9 @@ jobs:
           test -n "$SECRET_ID" && test -n "$SECRET_KEY"
           test -n "$COS_BUCKET" && test -n "$COS_REGION"
           coscmd config -a "$SECRET_ID" -s "$SECRET_KEY" -r "$COS_REGION" -b "$COS_BUCKET"
-          # 只上传当天的新画作和 gallery.json，保留旧文件时间戳
-          coscmd upload output/painting-$(date -u +%Y%m%d).jpg /painting-$(date -u +%Y%m%d).jpg
+          # 每次触发只上传本次新文件和最新索引, 旧对象不重新写入
+          latest=$(ls -t output/painting-*.jpg | head -1)
+          coscmd upload "$latest" "/$(basename "$latest")"
           coscmd upload output/gallery.json /gallery.json
 
       - name: Commit and push archive to GitHub

@@ -267,12 +267,14 @@ def main():
     year = extract_year(info["year_raw"])
     print(f"  ✓ {title} ({year})")
 
-    today = time.strftime("%Y%m%d")
-    img_name = f"painting-{today}.jpg"
+    now = time.localtime()
+    date_key = time.strftime("%Y%m%d", now)
+    time_key = time.strftime("%H%M%S", now)
+    run_key = f"{date_key}-{time_key}"
+    img_name = f"painting-{run_key}.jpg"
     img_path = os.path.join(OUT_DIR, img_name)
 
-    # 同一天重复运行直接覆盖
-    history = [h for h in history if h["date"] != today]
+    # 每次触发都生成独立文件; 同一天可保留多张画作
     if not download(info["thumburl"], img_path):
         print("! 图片下载失败")
         sys.exit(1)
@@ -280,7 +282,7 @@ def main():
 
     # 4. 写 history.json + gallery.json
     print("[4/4] 生成 gallery.json...")
-    history.insert(0, {"date": today, "file": pick, "title": title, "year": year})
+    history.insert(0, {"date": run_key, "file": pick, "title": title, "year": year})
     history = history[:HISTORY_LEN]
     save_history(history)
 
@@ -296,12 +298,8 @@ def main():
         json.dump(items, f, ensure_ascii=False, indent=2)
     print(f"  ✓ 已生成 {GALLERY_FILE} ({len(items)} 条)")
 
-    # 5. 清理旧图片 (保留最近 30 张, 避免 GitHub 仓库过大)
-    existing = [f for f in os.listdir(OUT_DIR) if re.match(r"painting-\d{8}\.jpg$", f)]
-    existing.sort(reverse=True)
-    for f in existing[KEEP_FILES:]:
-        os.remove(os.path.join(OUT_DIR, f))
-        print(f"  - 清理旧图: {f}")
+    # 5. 不清理旧图片: 每次成功触发的画作都永久保留
+    print("  ✓ 旧画作全部保留")
 
     print("\n完成!")
 

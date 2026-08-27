@@ -11,8 +11,6 @@
 #include "pinout.h"
 
 
-
-// 必应每日壁纸接口 (cn.bing.com — 中国大陆可直连)
 // 请求地址在 fetchOnlineRandom 里按 http/https 交替构造
 
 /** 从 HTML 字符串里去掉标签, 用于清洗版权声明 */
@@ -283,8 +281,8 @@ bool ArtProvider::parseGalleryListMeta(const String& payload, Artwork& out) {
   JsonArray arr = doc.as<JsonArray>();
   if (arr.size() == 0) return false;
 
-  // 随机挑一条
-  JsonObject pick = arr[random((int)arr.size())];
+  // 云端索引已按时间倒序, 每次在线更新取第一条(最新触发的画作)。
+  JsonObject pick = arr[0];
   String url = pick["image_url"] | "";
   if (url.length() == 0) return false;
 
