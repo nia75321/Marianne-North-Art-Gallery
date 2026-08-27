@@ -72,6 +72,8 @@
 #define ART_MAX_IMAGE_BYTES     (1536UL * 1024UL)
 /* HTTP 请求超时(ms) */
 #define ART_HTTP_TIMEOUT_MS     10000
+/* 后台检查腾讯云新画作的间隔(ms): 15 分钟 */
+#define ART_ONLINE_CHECK_MS     900000UL
 /* 解码/显示的单张图片最大边长(像素), 超出则提示不显示 */
 #define ART_MAX_DECODE_WH       1280
 

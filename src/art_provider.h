@@ -32,6 +32,15 @@ class ArtProvider {
   /** 从 SD 卡按文件名顺序取下一张画作 */
   bool fetchSdNext(Artwork& out);
 
+  /** 从 SD 卡取文件名最新的一张画作 */
+  bool fetchSdLatest(Artwork& out);
+
+  /**
+   * 拉取腾讯云 gallery.json, 把 SD 上没有的新画作下载到缓存。
+   * 返回本次新下载的数量, 最多下载 maxNew 张。
+   */
+  int syncOnlineGallery(int maxNew);
+
   /** 重置顺序模式指针, 下次 fetchSdNext 回到最早的画作 */
   void clearSdLastShown() { sdLastShown_ = ""; }
 

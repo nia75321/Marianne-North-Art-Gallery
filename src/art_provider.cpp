@@ -520,3 +520,80 @@ bool ArtProvider::fetchSdNext(Artwork& out) {
   loadMetadata(best, out);
   return true;
 }
+
+bool ArtProvider::fetchSdLatest(Artwork& out) {
+  if (!sdReady_) return false;
+  String* files = new (std::nothrow) String[ART_SD_MAX_FILES];
+  if (!files) return false;
+  int count = 0;
+  scanSdDir(ART_SD_CACHE, files, count);
+
+  String best = "";
+  for (int i = 0; i < count; ++i) {
+    if (files[i].length() == 0 || !files[i].startsWith(String(ART_SD_CACHE) + "/")) continue;
+    if (best.length() == 0 || files[i] > best) best = files[i];
+  }
+  delete[] files;
+  if (best.length() == 0 || !isValidJpegFile(best)) {
+    log_w("No valid JPEG under %s", ART_SD_ROOT);
+    return false;
+  }
+  sdLastShown_ = best;
+  out.id = best;
+  out.imagePath = best;
+  out.fromOnline = false;
+  loadMetadata(best, out);
+  return true;
+}
+
+int ArtProvider::syncOnlineGallery(int maxNew) {
+  if (WiFi.status() != WL_CONNECTED) return 0;
+  if (sizeof(ART_GALLERY_JSON_URL) <= 1) return 0;
+
+  String payload;
+  if (!httpGet(ART_GALLERY_JSON_URL, payload, ART_HTTP_TIMEOUT_MS)) return 0;
+
+  DynamicJsonDocument doc(32768);
+  if (deserializeJson(doc, payload) != DeserializationError::Ok) return 0;
+  if (!doc.is<JsonArray>()) return 0;
+
+  // 相对路径(仅文件名)时, 以 gallery.json 所在目录为基础拼接
+  String base = ART_GALLERY_JSON_URL;
+  int slash = base.lastIndexOf('/');
+  if (slash >= 0) base = base.substring(0, slash + 1);
+
+  int downloaded = 0;
+  JsonArray arr = doc.as<JsonArray>();
+  for (JsonObject pick : arr) {
+    if (downloaded >= maxNew) break;
+
+    String url = pick["image_url"] | "";
+    if (url.length() == 0) continue;
+    if (!url.startsWith("http://") && !url.startsWith("https://")) url = base + url;
+
+    String filename = url;
+    int ls = filename.lastIndexOf('/');
+    if (ls >= 0) filename = filename.substring(ls + 1);
+
+    // 已缓存的画作跳过, 只下载新出现的
+    String cachePath = String(ART_SD_CACHE) + "/" + sanitizeFileStem(filename);
+    if (SD.exists(cachePath + ".jpg")) continue;
+
+    Artwork a;
+    a.title = pick["title"] | "Untitled";
+    a.artist = pick["artist"] | "Unknown artist";
+    a.year = pick["year"] | "";
+    a.id = filename;
+    a.imagePath = url;
+    a.fromOnline = true;
+
+    uint8_t* buf = nullptr;
+    size_t len = 0;
+    if (!downloadImage(url, &buf, &len)) continue;
+    cacheToSd(a, buf, len);
+    free(buf);
+    ++downloaded;
+    log_i("Synced new painting: %s", filename.c_str());
+  }
+  return downloaded;
+}

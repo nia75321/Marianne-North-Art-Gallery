@@ -31,42 +31,8 @@ static int histCount = 0;
 
 static bool wifiConnected = false;
 static uint32_t lastAutoMs = 0;
-static bool dailyOnlineAttempted = false;
+static uint32_t lastOnlineSyncMs = 0;
 static bool randomMode = false;
-
-static int currentDay() {
-  time_t now = time(nullptr);
-  struct tm local{};
-  if (now < 100000) return -1;
-  localtime_r(&now, &local);
-  return local.tm_yday;
-}
-
-static String dailyMarkerPath() {
-  time_t now = time(nullptr);
-  struct tm local{};
-  if (now < 100000) return "";
-  localtime_r(&now, &local);
-  char name[48];
-  snprintf(name, sizeof(name), "%s/daily-%04d%02d%02d.done", ART_SD_CACHE,
-           local.tm_year + 1900, local.tm_mon + 1, local.tm_mday);
-  return String(name);
-}
-
-static bool downloadedToday() {
-  String marker = dailyMarkerPath();
-  return marker.length() > 0 && SD.exists(marker);
-}
-
-static void markDownloadedToday() {
-  String marker = dailyMarkerPath();
-  if (marker.length() == 0 || !art.sdReady()) return;
-  File f = SD.open(marker, FILE_WRITE);
-  if (f) {
-    f.print("ok");
-    f.close();
-  }
-}
 
 static void syncClock() {
   configTime(8 * 3600, 0, "ntp.aliyun.com", "pool.ntp.org");
@@ -166,6 +132,15 @@ static bool showSdNext() {
   return true;
 }
 
+/** 显示 SD 中最新的一张 (今天或前一天) */
+static bool showSdLatest() {
+  Artwork a;
+  if (!art.sdReady() || !art.fetchSdLatest(a)) return false;
+  pushHistory(a, nullptr, 0);
+  showEntry(hist[histCount - 1]);
+  return true;
+}
+
 /** 随机显示任意一张 SD 画作 */
 static bool showSdRandom() {
   Artwork a;
@@ -178,9 +153,9 @@ static bool showSdRandom() {
 /** 用力晃动: 在随机日期 / 按日期顺序两种模式间切换。 */
 static void toggleRandomMode() {
   if (randomMode) {
-    resetToToday();
+    randomMode = false;
     ui::toast("Date order");
-    if (!showSdNext()) ui::toast("No artwork available");
+    if (!showSdLatest()) ui::toast("No artwork available");
   } else {
     randomMode = true;
     ui::toast("Random date");
@@ -188,31 +163,22 @@ static void toggleRandomMode() {
   }
 }
 
-static void tryDailyOnline() {
-  if (WiFi.status() != WL_CONNECTED || dailyOnlineAttempted) return;
-  int day = currentDay();
-  if (day < 0 || downloadedToday()) return;
+/** 周期性检查腾讯云, 只下载 SD 上没有的新画作 */
+static void maybeSyncOnline() {
+  if (WiFi.status() != WL_CONNECTED) return;
+  if (millis() - lastOnlineSyncMs < ART_ONLINE_CHECK_MS) return;
+  lastOnlineSyncMs = millis();
 
-  dailyOnlineAttempted = true;
-  Artwork a;
-  uint8_t* jpg = nullptr;
-  size_t len = 0;
-  if (art.fetchOnlineRandom(a, &jpg, &len)) {
-    markDownloadedToday();
-    // 在线缓冲已成功写入 SD; 释放 RAM 后从文件显示，避免大图缓冲解码失败。
-    art.releaseJpg(jpg);
-    showSdRandom();
-  } else {
-    art.releaseJpg(jpg);
+  int n = art.syncOnlineGallery(5);
+  if (n > 0) {
+    log_i("Downloaded %d new painting(s)", n);
+    showSdLatest();
   }
 }
 
 static void showNext() {
   bool ok = randomMode ? showSdRandom() : showSdNext();
-  if (!ok) {
-    tryDailyOnline();
-    if (histCount == 0) ui::toast("No artwork available");
-  }
+  if (!ok && histCount == 0) ui::toast("No artwork available");
 }
 
 /* ---------------- Wi-Fi ---------------- */
@@ -231,7 +197,6 @@ static void ensureWifi() {
   if (wifiConnected) {
     log_i("WiFi connected: %s", WiFi.localIP().toString().c_str());
     syncClock();
-    tryDailyOnline();
   }
 }
 
@@ -252,12 +217,11 @@ void setup() {
   // Wi-Fi 只在后台连接, 不阻塞 SD 首屏。
   WiFi.mode(WIFI_STA);
   lastAutoMs = millis();
-  resetToToday();
-  if (!showSdNext()) {
+  lastOnlineSyncMs = millis();
+  if (!showSdLatest()) {
     ui::toast("No artwork available");
   }
   ensureWifi();
-  tryDailyOnline();
 }
 
 void loop() {
@@ -281,9 +245,9 @@ void loop() {
     }
   }
 
-  // Wi-Fi 断线重连; 在线更新永远不阻塞 SD 首屏。
+  // Wi-Fi 断线重连; 后台定期检查新画作, 不阻塞 SD 翻页。
   ensureWifi();
-  tryDailyOnline();
+  maybeSyncOnline();
 
   delay(20);
 }
