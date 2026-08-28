@@ -170,8 +170,9 @@ bool ArtProvider::downloadImage(const String& url, uint8_t** outBuf, size_t* out
   size_t total = readStream(http.getStreamPtr(), buf, cap);
   http.end();
 
-  if (total != cap && size > 0 && url.indexOf("gitee.com") >= 0) {
-    // Gitee 匿名下载每连接只给约 15KB 就断连, 改用 Range 小分块拼接
+  if (total != cap && size > 0) {
+    // 单连接被截断(COS/Gitee/TLS 记录大小), 改用 Range 小分块拼接
+    log_w("Image cut at %u/%u, resuming with Range chunks", total, cap);
     if (!rangeChunkDownload(url, buf, cap)) {
       free(buf);
       return false;
@@ -201,41 +202,47 @@ bool ArtProvider::downloadImage(const String& url, uint8_t** outBuf, size_t* out
   return true;
 }
 
-// Gitee 限制: 匿名 raw 下载每连接只给约 15KB. 用 12KB 的 Range 分块绕过.
-// nginx 对静态文件原生支持 Range 响应 206 Partial Content.
+// 部分服务器(COS/Gitee)单连接传输会被截断在几 KB~16KB,
+// 用 6KB 的 Range 小分块绕过, 每个分块独立连接且小于截断阈值.
+// COS/nginx 对静态文件原生支持 Range 响应 206 Partial Content.
 bool ArtProvider::rangeChunkDownload(const String& url, uint8_t* buf, size_t cap) {
-  const size_t CHUNK = 12000;
+  const size_t CHUNK = 6144;
   size_t offset = 0;
   while (offset < cap) {
     size_t end = offset + CHUNK - 1;
     if (end >= cap) end = cap - 1;
-
-    HTTPClient http;
-    if (url.startsWith("https")) {
-      secureClient_.setInsecure();
-      http.begin(secureClient_, url);
-    } else {
-      http.begin(url);
-    }
-    configureHttp(http, true, url);
     char range[40];
     snprintf(range, sizeof(range), "bytes=%u-%u", (unsigned)offset, (unsigned)end);
-    http.addHeader("Range", range);
-
-    int code = http.GET();
-    if (code != HTTP_CODE_PARTIAL_CONTENT) {
-      log_w("Gitee Range %s -> HTTP %d (服务器不支持 Range?)", range, code);
-      http.end();
-      return false;
-    }
     size_t want = end - offset + 1;
-    size_t got = readStream(http.getStreamPtr(), buf + offset, want);
-    http.end();
-    if (got != want) {
-      log_w("Gitee Range chunk %s incomplete: %u/%u", range, got, want);
-      return false;
+
+    bool gotChunk = false;
+    for (int retry = 0; retry < 2 && !gotChunk; ++retry) {
+      HTTPClient http;
+      if (url.startsWith("https")) {
+        secureClient_.setInsecure();
+        http.begin(secureClient_, url);
+      } else {
+        http.begin(url);
+      }
+      configureHttp(http, true, url);
+      http.addHeader("Range", range);
+
+      int code = http.GET();
+      if (code != HTTP_CODE_PARTIAL_CONTENT) {
+        log_w("Range %s -> HTTP %d", range, code);
+        http.end();
+        continue;
+      }
+      size_t got = readStream(http.getStreamPtr(), buf + offset, want);
+      http.end();
+      if (got == want) {
+        gotChunk = true;
+      } else {
+        log_w("Range chunk %s incomplete: %u/%u", range, got, want);
+      }
     }
-    offset += got;
+    if (!gotChunk) return false;
+    offset += want;
   }
   return true;
 }

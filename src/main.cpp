@@ -17,6 +17,8 @@
 #include <M5Unified.h>
 #include <WiFi.h>
 #include <time.h>
+#include <lwip/inet.h>
+#include <esp_log.h>
 #include "art_config.h"
 #include "art_models.h"
 #include "art_provider.h"
@@ -42,6 +44,24 @@ static void syncClock() {
   }
 }
 static uint32_t lastWifiRetryMs = 0;
+
+static void onWiFiEvent(WiFiEvent_t event) {
+  switch (event) {
+    case ARDUINO_EVENT_WIFI_STA_GOT_IP:
+      wifiConnected = true;
+      log_i("WiFi connected: %s", WiFi.localIP().toString().c_str());
+      syncClock();
+      lastOnlineSyncMs = 0;  // 连上后立即检查腾讯云
+      break;
+    case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
+      if (wifiConnected) log_w("WiFi disconnected");
+      wifiConnected = false;
+      lastWifiRetryMs = millis();  // 断开后冷却再重连
+      break;
+    default:
+      break;
+  }
+}
 
 /* ---------------- 历史记录 ---------------- */
 
@@ -165,7 +185,9 @@ static void toggleRandomMode() {
 
 /** 周期性检查腾讯云, 只下载 SD 上没有的新画作 */
 static void maybeSyncOnline() {
-  if (WiFi.status() != WL_CONNECTED) return;
+  if (!wifiConnected) return;
+  // 连接尚未完成或 NTP 时钟未同步时暂缓同步, 避免垃圾日志刷屏
+  if (wifiConnected && WiFi.localIP() == IPAddress(0, 0, 0, 0)) return;
   if (lastOnlineSyncMs != 0 && millis() - lastOnlineSyncMs < ART_ONLINE_CHECK_MS) return;
   lastOnlineSyncMs = millis();
 
@@ -175,7 +197,8 @@ static void maybeSyncOnline() {
     log_i("Downloaded %d new painting(s)", n);
     showSdLatest();
   } else {
-    log_i("Gallery already up to date");
+    // syncOnlineGallery 在无新图和网络失败时都会返回 0; 只有在 WiFi 真正连通时才打印 up-to-date
+    if (WiFi.localIP() != IPAddress(0, 0, 0, 0)) log_i("Gallery already up to date");
   }
 }
 
@@ -188,19 +211,16 @@ static void showNext() {
 
 static void ensureWifi() {
   if (wifiConnected) return;
-  if (millis() - lastWifiRetryMs < 30000) return;
+  if (millis() - lastWifiRetryMs < ART_WIFI_RETRY_MS) return;
   lastWifiRetryMs = millis();
-
+  WiFi.mode(WIFI_STA);
+  // 无需改路由器: 设备端覆盖 DNS, 只改 DNS 不改 IP(由 DHCP 分配)
+  {
+    IPAddress dns1(223, 5, 5, 5);
+    IPAddress dns2(114, 114, 114, 114);
+    WiFi.config(IPAddress(0, 0, 0, 0), IPAddress(0, 0, 0, 0), IPAddress(0, 0, 0, 0), dns1, dns2);
+  }
   WiFi.begin(ART_WIFI_SSID, ART_WIFI_PASSWORD);
-  uint32_t t0 = millis();
-  while (WiFi.status() != WL_CONNECTED && millis() - t0 < 5000) {
-    delay(100);
-  }
-  wifiConnected = (WiFi.status() == WL_CONNECTED);
-  if (wifiConnected) {
-    log_i("WiFi connected: %s", WiFi.localIP().toString().c_str());
-    syncClock();
-  }
 }
 
 /* ---------------- 入口 ---------------- */
@@ -219,8 +239,15 @@ void setup() {
 
   // Wi-Fi 只在后台连接, 不阻塞 SD 首屏。
   WiFi.mode(WIFI_STA);
+  // 驱动级静音 WiFi 事件刷屏(AUTH_EXPIRE/TIMEOUT 等由核心库输出), 保留错误级日志
+  esp_log_level_set("WiFiGeneric", ESP_LOG_ERROR);
+  // 关闭 WiFi 休眠, 减少掉线; autoReconnect 由驱动在后台退避重连
+  WiFi.setSleep(false);
+  WiFi.setAutoReconnect(true);
+  WiFi.onEvent(onWiFiEvent);
   lastAutoMs = millis();
-  lastOnlineSyncMs = 0;  // Wi-Fi 连上后立即检查一次腾讯云
+  lastOnlineSyncMs = 0;  // WiFi 连上后立即检查一次腾讯云
+  lastWifiRetryMs = millis() - ART_WIFI_RETRY_MS;  // 开机立即发起首次连接
   if (!showSdLatest()) {
     ui::toast("No artwork available");
   }

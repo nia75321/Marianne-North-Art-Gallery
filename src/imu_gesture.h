@@ -1,12 +1,12 @@
 /**
  * @file imu_gesture.h
- * @brief 基于 BMI270 加速度计的左右倾斜手势检测
+ * @brief 基于 BMI270 加速度计的晃动检测
  *
  * 用法:
  *   ImuGesture imu;
  *   imu.begin();
  *   loop() 中每帧调用 imu.update();
- *   consumeTiltLeft()/consumeTiltRight() 返回 true 表示一次手势完成。
+ *   consumeShake() 返回 true 表示一次用力晃动完成。
  */
 #pragma once
 
@@ -18,39 +18,16 @@ class ImuGesture {
 
   void update();
 
-  /** 取事件: 每次倾斜触发后返回一次 true */
-  bool consumeTiltLeft() {
-    bool v = left_;
-    left_ = false;
-    return v;
-  }
-  bool consumeTiltRight() {
-    bool v = right_;
-    right_ = false;
-    return v;
-  }
-
-  /** 取事件: 用力晃动一次返回一次 true */
+  /** 取事件: 每次用力晃动后返回一次 true */
   bool consumeShake() {
     bool v = shake_;
     shake_ = false;
     return v;
   }
 
-  /** 用力晃动时检测幅度阈值, 供外部调节 */
-  void setShakeThreshold(float g) { shakeThresholdG_ = g; }
-
  private:
-  enum class State : uint8_t { kFlat, kTiltLeft, kTiltRight };
-
   bool     filtInit_ = false;
   float    fx_ = 0, fy_ = 0, fz_ = 0;
-  State    state_ = State::kFlat;
-  uint32_t since_ = 0;
-  uint32_t cooldownUntil_ = 0;
-  bool     left_ = false;
-  bool     right_ = false;
-
   bool     shake_ = false;
   float    shakeThresholdG_ = 1.7f;
   uint32_t shakeQuietUntil_ = 0;

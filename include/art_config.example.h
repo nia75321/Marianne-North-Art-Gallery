@@ -19,6 +19,9 @@
  * ------------------------------------------------------------------ */
 #define ART_WIFI_SSID       "你的WiFi名称"
 #define ART_WIFI_PASSWORD   "你的WiFi密码"
+/* WiFi 重试冷却时间(ms): 非阻塞后台重连, 避免频繁尝试被路由器拉黑。
+   首选依赖驱动 autoReconnect; 这里只在长时间断开后手动兜底重连。 */
+#define ART_WIFI_RETRY_MS   30000UL
 
 /* ------------------------------------------------------------------ *
  * 图源 (联网时)
@@ -44,22 +47,15 @@
 /* 每天在线画作之外, gallery.json 保留最近 7 张供 SD 测试翻页 */
 
 /* ------------------------------------------------------------------ *
- * IMU 左右倾斜手势
+ * IMU 晃动手势
  *
- * ART_IMU_PLANE: 0 = 设备平放在桌面上; 1 = 设备竖立/靠在支架上(推荐)
- * ART_TILT_TRIGGER_DEG: 倾斜触发角度。想"几乎90度才翻页"设 75~80,
- *                      想要手感灵敏设 45 左右, 默认 60。
- * ART_TILT_RELEASE_DEG: 回正到多少度内才允许再次触发。
- * ART_TILT_HOLD_MS:     倾斜保持该时间后才触发, 防误触。
- * ART_TILT_COOLDOWN_MS: 触发后的冷却时间, 防连发。
- * ART_TILT_SIGN_INVERT: 实际使用中左右反了, 把它改成 1。
+ * 用力晃动设备 = 在"随机日期"与"按日期顺序"两种模式间切换。
+ * 翻页仅由触摸控制。
+ *
+ * ART_SHAKE_THRESHOLD_G: 晃动触发阈值(合加速度 g 值), 默认 1.7。
+ *   太灵敏(轻碰就触发)就调大, 不灵敏就调小。
  * ------------------------------------------------------------------ */
-#define ART_IMU_PLANE          1
-#define ART_TILT_TRIGGER_DEG   60
-#define ART_TILT_RELEASE_DEG   20
-#define ART_TILT_HOLD_MS       120
-#define ART_TILT_COOLDOWN_MS   400
-#define ART_TILT_SIGN_INVERT   0
+#define ART_SHAKE_THRESHOLD_G   1.7f
 
 /* ------------------------------------------------------------------ *
  * 播放
