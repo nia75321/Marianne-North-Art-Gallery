@@ -39,12 +39,12 @@ void ui::showBoot() {
   M5.Display.setTextDatum(MC_DATUM);
   M5.Display.setFont(&fonts::Font4);
   M5.Display.setTextColor(TFT_WHITE, TFT_BLACK);
-  M5.Display.drawString("Art Gallery", W / 2, H / 2 - 44);
+  M5.Display.drawString("Art Gallery", W / 2, H / 2 - 40);
   M5.Display.setFont(&fonts::Font2);
   M5.Display.setTextColor(TFT_LIGHTGREY, TFT_BLACK);
-  M5.Display.drawString("M5Stack CoreS3", W / 2, H / 2 - 10);
+  M5.Display.drawString("Marianne North", W / 2, H / 2 - 8);
   M5.Display.setTextColor(TFT_DARKGREY, TFT_BLACK);
-  M5.Display.drawString("Tilt left/right to switch", W / 2, H / 2 + 20);
+  M5.Display.drawString("M5Stack CoreS3", W / 2, H / 2 + 22);
 }
 
 void ui::toast(const char* msg) {
@@ -100,28 +100,19 @@ void ui::showArtwork(const Artwork& art, const uint8_t* jpg, size_t jpgLen,
     return;
   }
 
-  // 2. 底部信息栏
-  const int barH = 44;
+  // 2. 底部信息栏: 单行标题+年份, 缩小遮挡
+  const int barH = 20;
   M5.Display.fillRect(0, H - barH, W, barH, TFT_BLACK);
   M5.Display.drawFastHLine(0, H - barH, W, TFT_DARKGREY);
 
-  M5.Display.setTextDatum(ML_DATUM);
+  String line = art.title.length() ? art.title : String("(Untitled)");
+  if (art.year.length()) line += String("  ") + art.year;
+  if (sourceTag && String(sourceTag).length() > 0) {
+    line += String("  ") + String(sourceTag);
+  }
+  M5.Display.setTextDatum(MC_DATUM);
   M5.Display.setFont(&fonts::Font2);
   M5.Display.setTextColor(TFT_WHITE, TFT_BLACK);
-  M5.Display.drawString(
-      fitText(art.title.length() ? art.title.c_str() : "(Untitled)", W - 8), 4,
-      H - barH + 2);
-
-  M5.Display.setFont(&fonts::Font0);
-  M5.Display.setTextColor(TFT_LIGHTGREY, TFT_BLACK);
-  M5.Display.drawString(
-      fitText(art.artist.length() ? art.artist.c_str() : "Unknown artist", 150), 4,
-      H - barH + 22);
-
-  String tag = sourceTag;
-  if (art.year.length()) tag += "  " + art.year;
-  M5.Display.setTextDatum(MR_DATUM);
-  M5.Display.setTextColor(TFT_GREEN, TFT_BLACK);
-  M5.Display.drawString(tag, W - 4, H - barH + 22);
+  M5.Display.drawString(fitText(line.c_str(), W - 8), W / 2, H - barH / 2 - 1);
 }
 
