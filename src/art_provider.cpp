@@ -513,21 +513,18 @@ bool ArtProvider::fetchSdNext(Artwork& out) {
     return false;
   }
 
-  // 文件名按日期排序 (painting-YYYYMMDD.jpg)。按时间顺序显示:
-  // 上次显示的是第 N 张, 这次显示第 N+1 张; 超过最新一张后回到最早一张。
+  // 文件名按 painting-YYYYMMDD-HHMMSS.jpg 的日期和时间排序。
+  // 直接找严格大于上一张的最小文件名，不依赖目录枚举顺序。
   String lastShown = sdLastShown_;
   String best = "";
-  bool foundLast = (lastShown.length() == 0);
   for (int i = 0; i < count; ++i) {
     if (files[i].length() == 0 || !files[i].startsWith(String(ART_SD_CACHE) + "/")) continue;
-    if (foundLast) {
+    if (lastShown.length() == 0 || files[i] > lastShown) {
       if (best.length() == 0 || files[i] < best) best = files[i];
-    } else if (files[i] == lastShown) {
-      foundLast = true;
     }
   }
-  if (!foundLast || best.length() == 0) {
-    // 找不到上一张或已到最后一张, 回到最早的画作。
+  if (best.length() == 0) {
+    // 找不到更晚的文件时回到最早的一张。
     for (int i = 0; i < count; ++i) {
       if (files[i].length() == 0 || !files[i].startsWith(String(ART_SD_CACHE) + "/")) continue;
       if (best.length() == 0 || files[i] < best) best = files[i];
