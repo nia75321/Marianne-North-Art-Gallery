@@ -570,6 +570,8 @@ int ArtProvider::syncOnlineGallery(int maxNew) {
   if (slash >= 0) base = base.substring(0, slash + 1);
 
   int downloaded = 0;
+  int attempted = 0;
+  int failed = 0;
   JsonArray arr = doc.as<JsonArray>();
   for (JsonObject pick : arr) {
     if (downloaded >= maxNew) break;
@@ -586,6 +588,7 @@ int ArtProvider::syncOnlineGallery(int maxNew) {
     String cachePath = String(ART_SD_CACHE) + "/" + sanitizeFileStem(filename);
     if (SD.exists(cachePath + ".jpg")) continue;
 
+    ++attempted;
     Artwork a;
     a.title = pick["title"] | "Untitled";
     a.artist = pick["artist"] | "Unknown artist";
@@ -596,11 +599,14 @@ int ArtProvider::syncOnlineGallery(int maxNew) {
 
     uint8_t* buf = nullptr;
     size_t len = 0;
-    if (!downloadImage(url, &buf, &len)) continue;
+    if (!downloadImage(url, &buf, &len)) { ++failed; continue; }
     cacheToSd(a, buf, len);
     free(buf);
     ++downloaded;
     log_i("Synced new painting: %s", filename.c_str());
   }
+  // attempted==0: 真的已是最新; downloaded==0&&failed>0: 网络失败, 返回 -1 避免误报 up-to-date
+  if (attempted == 0) return 0;
+  if (downloaded == 0 && failed > 0) return -1;
   return downloaded;
 }
