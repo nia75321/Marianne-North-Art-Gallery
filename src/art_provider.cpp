@@ -88,27 +88,38 @@ bool ArtProvider::httpGet(const String& url, String& out, uint32_t timeoutMs) {
   out = "";
   if (WiFi.status() != WL_CONNECTED) return false;
 
-  HTTPClient http;
-  if (url.startsWith("https")) {
-    secureClient_.setInsecure();
-    http.begin(secureClient_, url);
-  } else {
-    http.begin(url);
+  // 公开 COS 支持 HTTP; HTTPS/DNS 抖动时回退 HTTP，避免 TLS 握手失败。
+  String attempts[2] = {url, url};
+  if (url.startsWith("https://") && url.indexOf(".myqcloud.com") >= 0) {
+    attempts[1].replace("https://", "http://");
   }
-  http.setTimeout(timeoutMs);
-  configureHttp(http, false, url);
 
-  int code = http.GET();
-  if (code != HTTP_CODE_OK) {
+  for (int attempt = 0; attempt < 2; ++attempt) {
+    if (attempt == 1 && attempts[1] == attempts[0]) break;
+    HTTPClient http;
+    String requestUrl = attempts[attempt];
+    if (requestUrl.startsWith("https")) {
+      secureClient_.setInsecure();
+      http.begin(secureClient_, requestUrl);
+    } else {
+      http.begin(requestUrl);
+    }
+    http.setTimeout(timeoutMs);
+    configureHttp(http, false, requestUrl);
+
+    int code = http.GET();
+    if (code == HTTP_CODE_OK) {
+      out = http.getString();
+      http.end();
+      if (attempt == 1) log_i("COS metadata HTTP fallback succeeded");
+      return true;
+    }
     String body = http.getString();
-    log_w("HTTP GET %d url=%s", code, url.c_str());
+    log_w("HTTP GET %d url=%s", code, requestUrl.c_str());
     if (body.length()) log_w("HTTP body: %s", body.substring(0, 160).c_str());
     http.end();
-    return false;
   }
-  out = http.getString();
-  http.end();
-  return true;
+  return false;
 }
 
 // 从流中读取最多 want 字节; 服务器断连/8秒无数据则提前返回
@@ -131,6 +142,17 @@ static size_t readStream(WiFiClient* stream, uint8_t* dst, size_t want) {
 }
 
 bool ArtProvider::downloadImage(const String& url, uint8_t** outBuf, size_t* outLen) {
+  if (downloadImageOnce(url, outBuf, outLen)) return true;
+  if (url.startsWith("https://") && url.indexOf(".myqcloud.com") >= 0) {
+    String fallback = url;
+    fallback.replace("https://", "http://");
+    log_i("Retrying COS image over HTTP");
+    return downloadImageOnce(fallback, outBuf, outLen);
+  }
+  return false;
+}
+
+bool ArtProvider::downloadImageOnce(const String& url, uint8_t** outBuf, size_t* outLen) {
   *outBuf = nullptr;
   *outLen = 0;
   if (WiFi.status() != WL_CONNECTED) return false;

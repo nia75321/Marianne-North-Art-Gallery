@@ -18,6 +18,7 @@
 #include <WiFi.h>
 #include <time.h>
 #include <lwip/inet.h>
+#include <lwip/dns.h>
 #include <esp_log.h>
 #include <esp_netif.h>
 #include "art_config.h"
@@ -35,6 +36,7 @@ static int histCount = 0;
 static bool wifiConnected = false;
 static uint32_t lastAutoMs = 0;
 static uint32_t lastOnlineSyncMs = 0;
+static bool firstOnlineSyncPending = false;
 static bool randomMode = false;
 
 static void syncClock() {
@@ -46,13 +48,25 @@ static void syncClock() {
 }
 static uint32_t lastWifiRetryMs = 0;
 
+static void applyFallbackDns() {
+  ip_addr_t primary;
+  ip_addr_t secondary;
+  IP_ADDR4(&primary, 223, 5, 5, 5);
+  IP_ADDR4(&secondary, 114, 114, 114, 114);
+  dns_setserver(0, &primary);
+  dns_setserver(1, &secondary);
+  log_i("DNS: 223.5.5.5, 114.114.114.114");
+}
+
 static void onWiFiEvent(WiFiEvent_t event) {
   switch (event) {
     case ARDUINO_EVENT_WIFI_STA_GOT_IP:
       wifiConnected = true;
+      applyFallbackDns();  // DHCP 后覆盖，否则路由器会把自定义 DNS 覆盖掉
       log_i("WiFi connected: %s", WiFi.localIP().toString().c_str());
       syncClock();
-      lastOnlineSyncMs = 0;  // 连上后立即检查腾讯云
+      lastOnlineSyncMs = millis();
+      firstOnlineSyncPending = true;  // 给 DNS/路由表留出稳定时间再首次同步
       break;
     case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
       if (wifiConnected) log_w("WiFi disconnected");
@@ -193,8 +207,11 @@ static void maybeSyncOnline() {
     esp_netif_ip_info_t ip;
     if (!netif || esp_netif_get_ip_info(netif, &ip) != ESP_OK || ip.ip.addr == 0) return;
   }
-  if (lastOnlineSyncMs != 0 && millis() - lastOnlineSyncMs < ART_ONLINE_CHECK_MS) return;
+  // 首次连上后等待 5 秒; 后续按配置间隔检查。
+  uint32_t waitMs = firstOnlineSyncPending ? 5000UL : ART_ONLINE_CHECK_MS;
+  if (lastOnlineSyncMs != 0 && millis() - lastOnlineSyncMs < waitMs) return;
   lastOnlineSyncMs = millis();
+  firstOnlineSyncPending = false;
 
   log_i("Checking Tencent COS for new paintings...");
   int n = art.syncOnlineGallery(5);
