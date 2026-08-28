@@ -19,6 +19,8 @@
 #include <time.h>
 #include <lwip/inet.h>
 #include <esp_log.h>
+#include <esp_netif.h>
+#include <esp_wifi.h>
 #include "art_config.h"
 #include "art_models.h"
 #include "art_provider.h"
@@ -186,8 +188,12 @@ static void toggleRandomMode() {
 /** 周期性检查腾讯云, 只下载 SD 上没有的新画作 */
 static void maybeSyncOnline() {
   if (!wifiConnected) return;
-  // 连接尚未完成或 NTP 时钟未同步时暂缓同步, 避免垃圾日志刷屏
-  if (wifiConnected && WiFi.localIP() == IPAddress(0, 0, 0, 0)) return;
+  // GOT_IP 只是驱动事件, 真正的网络就绪需等 DHCP 完成; 避免无 IP 就刷屏 DNS Failed
+  {
+    esp_netif_t* netif = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
+    esp_netif_ip_info_t ip;
+    if (!netif || esp_netif_get_ip_info(netif, &ip) != ESP_OK || ip.ip.addr == 0) return;
+  }
   if (lastOnlineSyncMs != 0 && millis() - lastOnlineSyncMs < ART_ONLINE_CHECK_MS) return;
   lastOnlineSyncMs = millis();
 
@@ -197,8 +203,7 @@ static void maybeSyncOnline() {
     log_i("Downloaded %d new painting(s)", n);
     showSdLatest();
   } else {
-    // syncOnlineGallery 在无新图和网络失败时都会返回 0; 只有在 WiFi 真正连通时才打印 up-to-date
-    if (WiFi.localIP() != IPAddress(0, 0, 0, 0)) log_i("Gallery already up to date");
+    log_i("Gallery already up to date");
   }
 }
 
