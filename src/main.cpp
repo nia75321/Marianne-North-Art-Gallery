@@ -20,7 +20,6 @@
 #include <lwip/inet.h>
 #include <esp_log.h>
 #include <esp_netif.h>
-#include <esp_wifi.h>
 #include "art_config.h"
 #include "art_models.h"
 #include "art_provider.h"
@@ -202,7 +201,8 @@ static void maybeSyncOnline() {
   if (n > 0) {
     log_i("Downloaded %d new painting(s)", n);
     showSdLatest();
-  } else {
+  } else if (n == 0) {
+    // 明确无新图时才打印 up-to-date; -1 表示网络/DNS 失败, 不刷 up-to-date 误导
     log_i("Gallery already up to date");
   }
 }

@@ -554,15 +554,15 @@ bool ArtProvider::fetchSdLatest(Artwork& out) {
 }
 
 int ArtProvider::syncOnlineGallery(int maxNew) {
-  if (WiFi.status() != WL_CONNECTED) return 0;
+  if (WiFi.status() != WL_CONNECTED) return -1;
   if (sizeof(ART_GALLERY_JSON_URL) <= 1) return 0;
 
   String payload;
-  if (!httpGet(ART_GALLERY_JSON_URL, payload, ART_HTTP_TIMEOUT_MS)) return 0;
+  if (!httpGet(ART_GALLERY_JSON_URL, payload, ART_HTTP_TIMEOUT_MS)) return -1;
 
   DynamicJsonDocument doc(32768);
-  if (deserializeJson(doc, payload) != DeserializationError::Ok) return 0;
-  if (!doc.is<JsonArray>()) return 0;
+  if (deserializeJson(doc, payload) != DeserializationError::Ok) return -1;
+  if (!doc.is<JsonArray>()) return -1;
 
   // 相对路径(仅文件名)时, 以 gallery.json 所在目录为基础拼接
   String base = ART_GALLERY_JSON_URL;
