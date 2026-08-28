@@ -88,7 +88,7 @@ bool ArtProvider::httpGet(const String& url, String& out, uint32_t timeoutMs) {
   out = "";
   if (WiFi.status() != WL_CONNECTED) return false;
 
-  // 公开 COS 支持 HTTP; HTTPS/DNS 抖动时回退 HTTP，避免 TLS 握手失败。
+  // 公开 COS 支持 HTTP; 先试 HTTPS，DNS/网络抖动时回退 HTTP 与备用 DNS 二次尝试。
   String attempts[2] = {url, url};
   if (url.startsWith("https://") && url.indexOf(".myqcloud.com") >= 0) {
     attempts[1].replace("https://", "http://");
@@ -96,6 +96,8 @@ bool ArtProvider::httpGet(const String& url, String& out, uint32_t timeoutMs) {
 
   for (int attempt = 0; attempt < 2; ++attempt) {
     if (attempt == 1 && attempts[1] == attempts[0]) break;
+    // 首次 HTTPS 失败后给 lwIP 的 DNS/ARP 稳定 2 秒再试 HTTP
+    if (attempt == 1) delay(2000);
     HTTPClient http;
     String requestUrl = attempts[attempt];
     if (requestUrl.startsWith("https")) {
@@ -104,7 +106,8 @@ bool ArtProvider::httpGet(const String& url, String& out, uint32_t timeoutMs) {
     } else {
       http.begin(requestUrl);
     }
-    http.setTimeout(timeoutMs);
+    // JSON 元数据走更长超时，避免 DNS 首包丢弃导致连接被判定失败
+    http.setTimeout(attempt == 1 ? timeoutMs + 5000UL : timeoutMs);
     configureHttp(http, false, requestUrl);
 
     int code = http.GET();

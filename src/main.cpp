@@ -217,7 +217,11 @@ static void maybeSyncOnline() {
   int n = art.syncOnlineGallery(5);
   if (n > 0) {
     log_i("Downloaded %d new painting(s)", n);
-    showSdLatest();
+    if (histCount == 0) {
+      ui::toast("New paintings available");
+    } else {
+      ui::toast("Synced: tap right to view");
+    }
   } else if (n == 0) {
     // 明确无新图时才打印 up-to-date; -1 表示网络/DNS 失败, 不刷 up-to-date 误导
     log_i("Gallery already up to date");
