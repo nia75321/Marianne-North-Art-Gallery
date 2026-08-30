@@ -1,5 +1,11 @@
 [
   {
+    "title": "The Wool-Flower of South Africa and Some Others",
+    "artist": "Marianne North",
+    "year": "1882",
+    "image_url": "painting-20260830-163751.jpg"
+  },
+  {
     "title": "Flowers and Fruit of Barringtonia, Borneo",
     "artist": "Marianne North",
     "year": "1876",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260827.jpg"
-  },
-  {
-    "title": "Australian Bears and Australian Pears (Koala)",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260826.jpg"
   }
 ]
