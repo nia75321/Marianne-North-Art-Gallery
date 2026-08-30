@@ -1,5 +1,11 @@
 [
   {
+    "title": "Mountain Path with (as yet) Unidentified Plants",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260830-210056.jpg"
+  },
+  {
     "title": "The Wool-Flower of South Africa and Some Others",
     "artist": "Marianne North",
     "year": "1882",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1871",
     "image_url": "painting-20260827-100854.jpg"
-  },
-  {
-    "title": "Foliage, Flowers and Seed-Vessels of a Rare West Australian Shrub",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260827.jpg"
   }
 ]
