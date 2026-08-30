@@ -1,5 +1,11 @@
 [
   {
+    "title": "Flowers and Fruit of Barringtonia, Borneo",
+    "artist": "Marianne North",
+    "year": "1876",
+    "image_url": "painting-20260830-115112.jpg"
+  },
+  {
     "title": "Palms in the Botanic Garden at Rio Janeiro",
     "artist": "Marianne North",
     "year": "1873",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260826.jpg"
-  },
-  {
-    "title": "Palawan Trees, Sarawak, Borneo",
-    "artist": "Marianne North",
-    "year": "1876",
-    "image_url": "painting-20260825.jpg"
   }
 ]
