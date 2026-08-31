@@ -1,5 +1,11 @@
 [
   {
+    "title": "River from Bussa, Sarawak, Borneo",
+    "artist": "Marianne North",
+    "year": "1876",
+    "image_url": "painting-20260831-133938.jpg"
+  },
+  {
     "title": "Gate at Lahore, Pakistan",
     "artist": "Marianne North",
     "year": "1878",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260827-173552.jpg"
-  },
-  {
-    "title": "Flowers of a Bush and Pitcher Plant, Mahé",
-    "artist": "Marianne North",
-    "year": "1883",
-    "image_url": "painting-20260827-101002.jpg"
   }
 ]
