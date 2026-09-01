@@ -1,5 +1,11 @@
 [
   {
+    "title": "Hot Baths of Cauquenas, Chili",
+    "artist": "Marianne North",
+    "year": "1873",
+    "image_url": "painting-20260901-163530.jpg"
+  },
+  {
     "title": "Wild Flowers of the Blue Mountains, New South Wales",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1876",
     "image_url": "painting-20260829-164058.jpg"
-  },
-  {
-    "title": "An Orchid and Butterflies",
-    "artist": "Marianne North",
-    "year": "1878",
-    "image_url": "painting-20260829-070007.jpg"
   }
 ]
