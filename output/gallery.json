@@ -1,5 +1,11 @@
 [
   {
+    "title": "View near Quilpue, Chili",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260901-050145.jpg"
+  },
+  {
     "title": "The Hottentot Fig and Other Succulents from the Karroo",
     "artist": "Marianne North",
     "year": "1882",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1882",
     "image_url": "painting-20260828-183708.jpg"
-  },
-  {
-    "title": "View near Brighton, Victoria",
-    "artist": "Marianne North",
-    "year": "1880",
-    "image_url": "painting-20260828-020909.jpg"
   }
 ]
