@@ -1,5 +1,11 @@
 [
   {
+    "title": "Houses and Bridges of the Malays at Sarawak, Borneo",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260902-193938.jpg"
+  },
+  {
     "title": "View on the Kowie River with Trumpet Flower in Front",
     "artist": "Marianne North",
     "year": "1882",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1882",
     "image_url": "painting-20260830-163751.jpg"
-  },
-  {
-    "title": "Flowers and Fruit of Barringtonia, Borneo",
-    "artist": "Marianne North",
-    "year": "1876",
-    "image_url": "painting-20260830-115112.jpg"
   }
 ]
