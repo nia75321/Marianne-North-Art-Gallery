@@ -1,5 +1,11 @@
 [
   {
+    "title": "Australian Spear Lily and an Acacia",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260902-042526.jpg"
+  },
+  {
     "title": "Group of Tree Ferns around the Spring at Matang, Sarawak, Borneo",
     "artist": "Marianne North",
     "year": "1876",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1873",
     "image_url": "painting-20260830-051927.jpg"
-  },
-  {
-    "title": "A Bornean Crinum",
-    "artist": "Marianne North",
-    "year": "1876",
-    "image_url": "painting-20260829-205230.jpg"
   }
 ]
