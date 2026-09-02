@@ -1,5 +1,11 @@
 [
   {
+    "title": "View from the Botanic Gardens, Hobart Town, Tasmania",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260902-205935.jpg"
+  },
+  {
     "title": "Houses and Bridges of the Malays at Sarawak, Borneo",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260830-210056.jpg"
-  },
-  {
-    "title": "The Wool-Flower of South Africa and Some Others",
-    "artist": "Marianne North",
-    "year": "1882",
-    "image_url": "painting-20260830-163751.jpg"
   }
 ]
