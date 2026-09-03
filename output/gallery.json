@@ -1,5 +1,11 @@
 [
   {
+    "title": "Malabar Point, Bombay (Mumbai)",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260903-041807.jpg"
+  },
+  {
     "title": "View from the Botanic Gardens, Hobart Town, Tasmania",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1878",
     "image_url": "painting-20260831-052701.jpg"
-  },
-  {
-    "title": "Mountain Path with (as yet) Unidentified Plants",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260830-210056.jpg"
   }
 ]
