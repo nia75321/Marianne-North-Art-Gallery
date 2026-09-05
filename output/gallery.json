@@ -1,5 +1,11 @@
 [
   {
+    "title": "A Species of Watsonia",
+    "artist": "Marianne North",
+    "year": "1880",
+    "image_url": "painting-20260905-150859.jpg"
+  },
+  {
     "title": "Cedar Path, Alderley Garden, Gloucestershire",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260902-205935.jpg"
-  },
-  {
-    "title": "Houses and Bridges of the Malays at Sarawak, Borneo",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260902-193938.jpg"
   }
 ]
