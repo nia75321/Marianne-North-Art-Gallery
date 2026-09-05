@@ -1,5 +1,11 @@
 [
   {
+    "title": "Foliage and Flowers of the Californian Dogwood, and Humming Birds",
+    "artist": "Marianne North",
+    "year": "1875",
+    "image_url": "painting-20260905-201720.jpg"
+  },
+  {
     "title": "A Species of Watsonia",
     "artist": "Marianne North",
     "year": "1880",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260903-041807.jpg"
-  },
-  {
-    "title": "View from the Botanic Gardens, Hobart Town, Tasmania",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260902-205935.jpg"
   }
 ]
