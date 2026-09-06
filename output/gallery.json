@@ -1,5 +1,11 @@
 [
   {
+    "title": "A Tree of the Sea-Shore, St John's River, Kaffraria",
+    "artist": "Marianne North",
+    "year": "1882",
+    "image_url": "painting-20260906-152445.jpg"
+  },
+  {
     "title": "Parasites on Beech Trees, Chili",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260903-205833.jpg"
-  },
-  {
-    "title": "Foliage and Flowers of the Loquat or Japanese Medlar",
-    "artist": "Marianne North",
-    "year": "1873",
-    "image_url": "painting-20260903-162236.jpg"
   }
 ]
