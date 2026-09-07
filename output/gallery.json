@@ -1,5 +1,11 @@
 [
   {
+    "title": "Vegetation of the Desert of Arizona",
+    "artist": "Marianne North",
+    "year": "1875",
+    "image_url": "painting-20260907-043137.jpg"
+  },
+  {
     "title": "View in the Botanic Garden, Brisbane, Queensland",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1876",
     "image_url": "painting-20260904-111238.jpg"
-  },
-  {
-    "title": "White and Yellow Everlastings (with Varieties of Mantis to Match) and Other Natal Flowers",
-    "artist": "Marianne North",
-    "year": "1882",
-    "image_url": "painting-20260904-042454.jpg"
   }
 ]
