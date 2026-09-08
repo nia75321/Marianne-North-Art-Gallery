@@ -1,5 +1,11 @@
 [
   {
+    "title": "Near Suez, Red Sea",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260908-042851.jpg"
+  },
+  {
     "title": "Male Cones of Araucaria araucana",
     "artist": "Marianne North",
     "year": "1884",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260905-042047.jpg"
-  },
-  {
-    "title": "Foliage and Flowers of the Indian Rhododendron grande",
-    "artist": "Marianne North",
-    "year": "1878",
-    "image_url": "painting-20260904-204314.jpg"
   }
 ]
