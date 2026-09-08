@@ -1,5 +1,11 @@
 [
   {
+    "title": "Plant with White Flowers on a Black Background*",
+    "artist": "Marianne North",
+    "year": "1882",
+    "image_url": "painting-20260908-163450.jpg"
+  },
+  {
     "title": "Sterculia of Mexico",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1880",
     "image_url": "painting-20260905-150859.jpg"
-  },
-  {
-    "title": "Cedar Path, Alderley Garden, Gloucestershire",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260905-103012.jpg"
   }
 ]
