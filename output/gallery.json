@@ -1,5 +1,11 @@
 [
   {
+    "title": "The Deodar or Indian Cedar",
+    "artist": "Marianne North",
+    "year": "1878",
+    "image_url": "painting-20260909-205404.jpg"
+  },
+  {
     "title": "View of the Mountains from the Railway between Durban and Maritzburg, Natal",
     "artist": "Marianne North",
     "year": "1882",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260906-202148.jpg"
-  },
-  {
-    "title": "A Tree of the Sea-Shore, St John's River, Kaffraria",
-    "artist": "Marianne North",
-    "year": "1882",
-    "image_url": "painting-20260906-152445.jpg"
   }
 ]
