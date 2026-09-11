@@ -1,5 +1,11 @@
 [
   {
+    "title": "Scorpion Orchid, Cultivated at Singapore",
+    "artist": "Marianne North",
+    "year": "1876",
+    "image_url": "painting-20260911-205505.jpg"
+  },
+  {
     "title": "View of the Sugarloaf Mountain from the Aqueduct Road, Rio Janeiro",
     "artist": "Marianne North",
     "year": "1873",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1878",
     "image_url": "painting-20260909-043539.jpg"
-  },
-  {
-    "title": "Sunrise among the Pines near Fagoo in the Himalayas",
-    "artist": "Marianne North",
-    "year": "1878",
-    "image_url": "painting-20260908-210554.jpg"
   }
 ]
