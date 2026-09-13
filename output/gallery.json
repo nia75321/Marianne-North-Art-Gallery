@@ -1,5 +1,11 @@
 [
   {
+    "title": "Study of Olives, Painted in Italy",
+    "artist": "Marianne North",
+    "year": "1875",
+    "image_url": "painting-20260913-044056.jpg"
+  },
+  {
     "title": "Wild Flowers of Chanleon, Chili",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "c.1870",
     "image_url": "painting-20260910-111259.jpg"
-  },
-  {
-    "title": "View of the 'Organ Pipes', Mount Wellington, Tasmania",
-    "artist": "Marianne North",
-    "year": "1880",
-    "image_url": "painting-20260910-043519.jpg"
   }
 ]
