@@ -1,5 +1,11 @@
 [
   {
+    "title": "Japanese Flowers",
+    "artist": "Marianne North",
+    "year": "1876",
+    "image_url": "painting-20260913-204504.jpg"
+  },
+  {
     "title": "Blue Poppy Growing on Mount Tonglo, Sikkim-Himalaya",
     "artist": "Marianne North",
     "year": "1878",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1882",
     "image_url": "painting-20260911-043234.jpg"
-  },
-  {
-    "title": "River Scene at Sarawak, Borneo, when the Tide is Getting Low",
-    "artist": "Marianne North",
-    "year": "1876",
-    "image_url": "painting-20260910-204836.jpg"
   }
 ]
