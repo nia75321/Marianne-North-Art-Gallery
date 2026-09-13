@@ -1,5 +1,11 @@
 [
   {
+    "title": "Group of Cultivated Flowers",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260913-114513.jpg"
+  },
+  {
     "title": "Study of Olives, Painted in Italy",
     "artist": "Marianne North",
     "year": "1875",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1878",
     "image_url": "painting-20260910-162052.jpg"
-  },
-  {
-    "title": "Papyrus or Paper Reed Growing in the Ciane, Sicily",
-    "artist": "Marianne North",
-    "year": "c.1870",
-    "image_url": "painting-20260910-111259.jpg"
   }
 ]
