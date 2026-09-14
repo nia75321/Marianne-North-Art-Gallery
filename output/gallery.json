@@ -1,5 +1,11 @@
 [
   {
+    "title": "Royal Palm Avenue",
+    "artist": "Marianne North",
+    "year": "1872",
+    "image_url": "painting-20260914-123831.jpg"
+  },
+  {
     "title": "The Bael Fruit",
     "artist": "Marianne North",
     "year": "1878",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1873",
     "image_url": "painting-20260911-162452.jpg"
-  },
-  {
-    "title": "Part of the 'Residence', St John's, Kaffraria",
-    "artist": "Marianne North",
-    "year": "1882",
-    "image_url": "painting-20260911-111421.jpg"
   }
 ]
