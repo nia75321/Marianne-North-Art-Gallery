@@ -1,5 +1,11 @@
 [
   {
+    "title": "Java near Malang, Imeeroc",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260914-214642.jpg"
+  },
+  {
     "title": "Royal Palm Avenue",
     "artist": "Marianne North",
     "year": "1872",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1876",
     "image_url": "painting-20260911-205505.jpg"
-  },
-  {
-    "title": "View of the Sugarloaf Mountain from the Aqueduct Road, Rio Janeiro",
-    "artist": "Marianne North",
-    "year": "1873",
-    "image_url": "painting-20260911-162452.jpg"
   }
 ]
