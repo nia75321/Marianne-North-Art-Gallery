@@ -1,5 +1,11 @@
 [
   {
+    "title": "Sundial, Alderley Garden, Gloucestershire",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260915-211635.jpg"
+  },
+  {
     "title": "The Blue Plumbago in Contrast, Van Staaden's Kloof",
     "artist": "Marianne North",
     "year": "1882",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260912-203028.jpg"
-  },
-  {
-    "title": "African Baobab Trees, a Large Tamarind, the God Aiyanar and His Two Wives",
-    "artist": "Marianne North",
-    "year": "1878",
-    "image_url": "painting-20260912-152845.jpg"
   }
 ]
