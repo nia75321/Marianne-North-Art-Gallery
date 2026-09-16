@@ -1,5 +1,11 @@
 [
   {
+    "title": "The Knobwood and Flowers of Natal",
+    "artist": "Marianne North",
+    "year": "1882",
+    "image_url": "painting-20260916-112602.jpg"
+  },
+  {
     "title": "Foliage, Flowers and Fruit of the False Tomato, Painted in Brazil",
     "artist": "Marianne North",
     "year": "1873",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260913-114513.jpg"
-  },
-  {
-    "title": "Study of Olives, Painted in Italy",
-    "artist": "Marianne North",
-    "year": "1875",
-    "image_url": "painting-20260913-044056.jpg"
   }
 ]
