@@ -1,5 +1,11 @@
 [
   {
+    "title": "Foliage, Flowers and Fruit of the False Tomato, Painted in Brazil",
+    "artist": "Marianne North",
+    "year": "1873",
+    "image_url": "painting-20260916-044429.jpg"
+  },
+  {
     "title": "Sundial, Alderley Garden, Gloucestershire",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1875",
     "image_url": "painting-20260913-044056.jpg"
-  },
-  {
-    "title": "Wild Flowers of Chanleon, Chili",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260912-203028.jpg"
   }
 ]
