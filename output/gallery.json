@@ -1,5 +1,11 @@
 [
   {
+    "title": "The Kutub Minar, Delhi",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260916-211439.jpg"
+  },
+  {
     "title": "Aloe and Passionflower, South Africa",
     "artist": "Marianne North",
     "year": "1882",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1876",
     "image_url": "painting-20260913-204504.jpg"
-  },
-  {
-    "title": "Blue Poppy Growing on Mount Tonglo, Sikkim-Himalaya",
-    "artist": "Marianne North",
-    "year": "1878",
-    "image_url": "painting-20260913-161250.jpg"
   }
 ]
