@@ -1,5 +1,11 @@
 [
   {
+    "title": "View of the Himalaya Mountains from Mussooree",
+    "artist": "Marianne North",
+    "year": "1878",
+    "image_url": "painting-20260917-044730.jpg"
+  },
+  {
     "title": "The Kutub Minar, Delhi",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1878",
     "image_url": "painting-20260914-044928.jpg"
-  },
-  {
-    "title": "Japanese Flowers",
-    "artist": "Marianne North",
-    "year": "1876",
-    "image_url": "painting-20260913-204504.jpg"
   }
 ]
