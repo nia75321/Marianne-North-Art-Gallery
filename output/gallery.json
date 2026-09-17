@@ -1,5 +1,11 @@
 [
   {
+    "title": "Wild Flowers of Albany, West Australia",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260917-113526.jpg"
+  },
+  {
     "title": "View of the Himalaya Mountains from Mussooree",
     "artist": "Marianne North",
     "year": "1878",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1872",
     "image_url": "painting-20260914-123831.jpg"
-  },
-  {
-    "title": "The Bael Fruit",
-    "artist": "Marianne North",
-    "year": "1878",
-    "image_url": "painting-20260914-044928.jpg"
   }
 ]
