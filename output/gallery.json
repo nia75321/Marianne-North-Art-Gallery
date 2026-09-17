@@ -1,5 +1,11 @@
 [
   {
+    "title": "Flowers of the Waratah, of New South Wales",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260917-211822.jpg"
+  },
+  {
     "title": "Puzzle-Monkey Trees and Guanacos, Chili",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260915-044916.jpg"
-  },
-  {
-    "title": "Java near Malang, Imeeroc",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260914-214642.jpg"
   }
 ]
