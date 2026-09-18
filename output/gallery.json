@@ -1,5 +1,11 @@
 [
   {
+    "title": "West Australian Flowers",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260918-205129.jpg"
+  },
+  {
     "title": "A Medley from Groot Post, South Africa",
     "artist": "Marianne North",
     "year": "1882",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1873",
     "image_url": "painting-20260916-044429.jpg"
-  },
-  {
-    "title": "Sundial, Alderley Garden, Gloucestershire",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260915-211635.jpg"
   }
 ]
