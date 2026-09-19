@@ -1,5 +1,11 @@
 [
   {
+    "title": "Himalayan Flowers Embedded in Maidenhair Fern",
+    "artist": "Marianne North",
+    "year": "1878",
+    "image_url": "painting-20260919-203503.jpg"
+  },
+  {
     "title": "Not One Flower but Many in One, Van Staaden's Kloof",
     "artist": "Marianne North",
     "year": "1882",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1878",
     "image_url": "painting-20260917-044730.jpg"
-  },
-  {
-    "title": "The Kutub Minar, Delhi",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260916-211439.jpg"
   }
 ]
