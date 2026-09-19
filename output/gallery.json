@@ -1,5 +1,11 @@
 [
   {
+    "title": "Not One Flower but Many in One, Van Staaden's Kloof",
+    "artist": "Marianne North",
+    "year": "1882",
+    "image_url": "painting-20260919-155032.jpg"
+  },
+  {
     "title": "Autumn Tints near Niagara, United States",
     "artist": "Marianne North",
     "year": "1871",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260916-211439.jpg"
-  },
-  {
-    "title": "Aloe and Passionflower, South Africa",
-    "artist": "Marianne North",
-    "year": "1882",
-    "image_url": "painting-20260916-164902.jpg"
   }
 ]
