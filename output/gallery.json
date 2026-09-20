@@ -1,5 +1,11 @@
 [
   {
+    "title": "Honeysucker at Work, Sarawak, Borneo",
+    "artist": "Marianne North",
+    "year": "1876",
+    "image_url": "painting-20260920-111643.jpg"
+  },
+  {
     "title": "A Darjeeling Oak Festooned with a Climber",
     "artist": "Marianne North",
     "year": "1878",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260917-165545.jpg"
-  },
-  {
-    "title": "Wild Flowers of Albany, West Australia",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260917-113526.jpg"
   }
 ]
