@@ -1,5 +1,11 @@
 [
   {
+    "title": "The Gool-achin or Caracucha",
+    "artist": "Marianne North",
+    "year": "1878",
+    "image_url": "painting-20260920-204534.jpg"
+  },
+  {
     "title": "She Oak Trees on the Bendamere River, Queensland, and Companion Birds",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1882",
     "image_url": "painting-20260918-043722.jpg"
-  },
-  {
-    "title": "Flowers of the Waratah, of New South Wales",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260917-211822.jpg"
   }
 ]
