@@ -1,5 +1,11 @@
 [
   {
+    "title": "Red Water-Lily",
+    "artist": "Marianne North",
+    "year": "1882",
+    "image_url": "painting-20260922-113050.jpg"
+  },
+  {
     "title": "A Selection of West Australian Flowers",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1871",
     "image_url": "painting-20260919-105258.jpg"
-  },
-  {
-    "title": "Musk Tree and Background of Evergreen 'Beech', Victoria",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260919-043225.jpg"
   }
 ]
