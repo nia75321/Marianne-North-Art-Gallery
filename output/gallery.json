@@ -1,5 +1,11 @@
 [
   {
+    "title": "White and Red Flowering Plant on a Black Background*",
+    "artist": "Marianne North",
+    "year": "1882",
+    "image_url": "painting-20260922-165324.jpg"
+  },
+  {
     "title": "Red Water-Lily",
     "artist": "Marianne North",
     "year": "1882",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1882",
     "image_url": "painting-20260919-155032.jpg"
-  },
-  {
-    "title": "Autumn Tints near Niagara, United States",
-    "artist": "Marianne North",
-    "year": "1871",
-    "image_url": "painting-20260919-105258.jpg"
   }
 ]
