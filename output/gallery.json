@@ -1,5 +1,11 @@
 [
   {
+    "title": "State Elephant, Baroda",
+    "artist": "Marianne North",
+    "year": "1879",
+    "image_url": "painting-20260923-165203.jpg"
+  },
+  {
     "title": "Fernshaw, Victoria",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260920-155959.jpg"
-  },
-  {
-    "title": "Honeysucker at Work, Sarawak, Borneo",
-    "artist": "Marianne North",
-    "year": "1876",
-    "image_url": "painting-20260920-111643.jpg"
   }
 ]
