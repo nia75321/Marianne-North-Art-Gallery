@@ -1,5 +1,11 @@
 [
   {
+    "title": "Fernshaw, Victoria",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260923-112834.jpg"
+  },
+  {
     "title": "Honeyflowers and Honeysuckers, South Africa",
     "artist": "Marianne North",
     "year": "1882",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1876",
     "image_url": "painting-20260920-111643.jpg"
-  },
-  {
-    "title": "A Darjeeling Oak Festooned with a Climber",
-    "artist": "Marianne North",
-    "year": "1878",
-    "image_url": "painting-20260920-044920.jpg"
   }
 ]
