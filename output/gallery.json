@@ -1,5 +1,11 @@
 [
   {
+    "title": "A Selection of Flowers from Mount Wellington, Tasmania",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260924-113921.jpg"
+  },
+  {
     "title": "Flowers and fruit of the mangosteen, and Singapore monkey, by Marianne North",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260921-124202.jpg"
-  },
-  {
-    "title": "The Kuddum or Cadamba",
-    "artist": "Marianne North",
-    "year": "1878",
-    "image_url": "painting-20260921-044932.jpg"
   }
 ]
