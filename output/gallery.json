@@ -1,5 +1,11 @@
 [
   {
+    "title": "Flowers and fruit of the mangosteen, and Singapore monkey, by Marianne North",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260924-044213.jpg"
+  },
+  {
     "title": "Group of Wild Palms, Sarawak, Borneo",
     "artist": "Marianne North",
     "year": "1876",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1878",
     "image_url": "painting-20260921-044932.jpg"
-  },
-  {
-    "title": "The Gool-achin or Caracucha",
-    "artist": "Marianne North",
-    "year": "1878",
-    "image_url": "painting-20260920-204534.jpg"
   }
 ]
