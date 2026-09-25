@@ -1,5 +1,11 @@
 [
   {
+    "title": "Foliage and Fruit of Two Indian Trees",
+    "artist": "Marianne North",
+    "year": "1878",
+    "image_url": "painting-20260925-045137.jpg"
+  },
+  {
     "title": "Pendulous Sparaxis and Long-Tailed Finch in Van Staaden's Kloof",
     "artist": "Marianne North",
     "year": "1882",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1882",
     "image_url": "painting-20260922-113050.jpg"
-  },
-  {
-    "title": "A Selection of West Australian Flowers",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260922-044824.jpg"
   }
 ]
