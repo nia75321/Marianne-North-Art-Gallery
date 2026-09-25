@@ -1,5 +1,11 @@
 [
   {
+    "title": "Statue of Buddha",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260925-170620.jpg"
+  },
+  {
     "title": "View of Kinchinjunga from Tonglo",
     "artist": "Marianne North",
     "year": "1878",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1878",
     "image_url": "painting-20260922-211453.jpg"
-  },
-  {
-    "title": "White and Red Flowering Plant on a Black Background*",
-    "artist": "Marianne North",
-    "year": "1882",
-    "image_url": "painting-20260922-165324.jpg"
   }
 ]
