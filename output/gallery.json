@@ -1,5 +1,11 @@
 [
   {
+    "title": "Looking into the Calaveras Grove of Big Trees, California",
+    "artist": "Marianne North",
+    "year": "1875",
+    "image_url": "painting-20260926-210505.jpg"
+  },
+  {
     "title": "Ordeal Plant or Tanghin and Parokeets of Madagascar",
     "artist": "Marianne North",
     "year": "1880",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260924-044213.jpg"
-  },
-  {
-    "title": "Group of Wild Palms, Sarawak, Borneo",
-    "artist": "Marianne North",
-    "year": "1876",
-    "image_url": "painting-20260923-212722.jpg"
   }
 ]
