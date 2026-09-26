@@ -1,5 +1,11 @@
 [
   {
+    "title": "Palma Christi or Castor Oil, Painted in Brazil",
+    "artist": "Marianne North",
+    "year": "1873",
+    "image_url": "painting-20260926-111826.jpg"
+  },
+  {
     "title": "A Sacred Grass",
     "artist": "Marianne North",
     "year": "1878",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1879",
     "image_url": "painting-20260923-165203.jpg"
-  },
-  {
-    "title": "Fernshaw, Victoria",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260923-112834.jpg"
   }
 ]
