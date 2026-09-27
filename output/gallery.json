@@ -1,5 +1,11 @@
 [
   {
+    "title": "Two Climbing Plants of St John's and Butterflies",
+    "artist": "Marianne North",
+    "year": "1882",
+    "image_url": "painting-20260927-051311.jpg"
+  },
+  {
     "title": "Looking into the Calaveras Grove of Big Trees, California",
     "artist": "Marianne North",
     "year": "1875",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260924-113921.jpg"
-  },
-  {
-    "title": "Flowers and fruit of the mangosteen, and Singapore monkey, by Marianne North",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260924-044213.jpg"
   }
 ]
