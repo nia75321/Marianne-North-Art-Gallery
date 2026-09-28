@@ -1,5 +1,11 @@
 [
   {
+    "title": "Flowers and Butterflies of Sarawak, Borneo",
+    "artist": "Marianne North",
+    "year": "1876",
+    "image_url": "painting-20260928-231304.jpg"
+  },
+  {
     "title": "Pawan Durfur",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260925-213128.jpg"
-  },
-  {
-    "title": "Statue of Buddha",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260925-170620.jpg"
   }
 ]
