@@ -1,5 +1,11 @@
 [
   {
+    "title": "Pawan Durfur",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260928-134623.jpg"
+  },
+  {
     "title": "Some Wild Flowers of Quilpué, Chili",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20260925-170620.jpg"
-  },
-  {
-    "title": "View of Kinchinjunga from Tonglo",
-    "artist": "Marianne North",
-    "year": "1878",
-    "image_url": "painting-20260925-114526.jpg"
   }
 ]
