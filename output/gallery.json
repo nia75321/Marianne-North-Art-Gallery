@@ -1,5 +1,11 @@
 [
   {
+    "title": "West Australian Vegetation",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20260929-053825.jpg"
+  },
+  {
     "title": "Flowers and Butterflies of Sarawak, Borneo",
     "artist": "Marianne North",
     "year": "1876",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1878",
     "image_url": "painting-20260926-045114.jpg"
-  },
-  {
-    "title": "Blue Gum Trees, Silver Wattle and Sassafras on the Huon Road, Tasmania",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20260925-213128.jpg"
   }
 ]
