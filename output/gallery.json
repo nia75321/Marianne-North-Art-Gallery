@@ -1,5 +1,11 @@
 [
   {
+    "title": "View of Alderley with Summerhouse on the Left",
+    "artist": "Marianne North",
+    "year": "1880",
+    "image_url": "painting-20260929-221127.jpg"
+  },
+  {
     "title": "Australian Sandalwood with Mistletoe and Emu Wren, West Australia",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1880",
     "image_url": "painting-20260926-161907.jpg"
-  },
-  {
-    "title": "Palma Christi or Castor Oil, Painted in Brazil",
-    "artist": "Marianne North",
-    "year": "1873",
-    "image_url": "painting-20260926-111826.jpg"
   }
 ]
