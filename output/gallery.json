@@ -1,5 +1,11 @@
 [
   {
+    "title": "View of Melbourne from the Botanic Gardens",
+    "artist": "Marianne North",
+    "year": "1880",
+    "image_url": "painting-20260930-221126.jpg"
+  },
+  {
     "title": "West Australian Plants",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1882",
     "image_url": "painting-20260927-115715.jpg"
-  },
-  {
-    "title": "Two Climbing Plants of St John's and Butterflies",
-    "artist": "Marianne North",
-    "year": "1882",
-    "image_url": "painting-20260927-051311.jpg"
   }
 ]
