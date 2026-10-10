@@ -1,5 +1,11 @@
 [
   {
+    "title": "Leaf-Insects and Stick-Insects",
+    "artist": "Marianne North",
+    "year": "c.1870",
+    "image_url": "painting-20261010-021806.jpg"
+  },
+  {
     "title": "Fig-Tree Village and Its Big Godfather, Illawarra",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1876",
     "image_url": "painting-20261001-130549.jpg"
-  },
-  {
-    "title": "Foliage, Flowers and Seed-Vessel of the Opium Poppy",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20261001-054515.jpg"
   }
 ]
