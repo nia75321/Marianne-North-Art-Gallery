@@ -1,5 +1,11 @@
 [
   {
+    "title": "Study of Cocoanut Palm",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20261011-015017.jpg"
+  },
+  {
     "title": "Leaf-Insects and Stick-Insects",
     "artist": "Marianne North",
     "year": "c.1870",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20261001-223758.jpg"
-  },
-  {
-    "title": "Fruit of Sandoricum and Green Gaper, Borneo",
-    "artist": "Marianne North",
-    "year": "1876",
-    "image_url": "painting-20261001-130549.jpg"
   }
 ]
