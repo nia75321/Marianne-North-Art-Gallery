@@ -1,5 +1,11 @@
 [
   {
+    "title": "Scene in Dr Atherstone's Garden, Grahamstown",
+    "artist": "Marianne North",
+    "year": "1882",
+    "image_url": "painting-20261012-022038.jpg"
+  },
+  {
     "title": "Study of Cocoanut Palm",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20261002-052921.jpg"
-  },
-  {
-    "title": "A Chilean Cactus in Flower and Its Leafless Parasite in Fruit",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20261001-223758.jpg"
   }
 ]
