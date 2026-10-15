@@ -1,5 +1,11 @@
 [
   {
+    "title": "Foliage, Flowers and Fruit of a Variety of Guava",
+    "artist": "Marianne North",
+    "year": "1872",
+    "image_url": "painting-20261015-012625.jpg"
+  },
+  {
     "title": "Inflorescence of the West Indian Pinguin",
     "artist": "Marianne North",
     "year": "1872",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1876",
     "image_url": "painting-20261004-023359.jpg"
-  },
-  {
-    "title": "Foliage and Fruit of Sterculia parviflora",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20261002-220931.jpg"
   }
 ]
