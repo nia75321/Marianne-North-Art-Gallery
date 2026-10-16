@@ -1,5 +1,11 @@
 [
   {
+    "title": "Brisbane Botanic Gardens",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20261016-011749.jpg"
+  },
+  {
     "title": "Foliage, Flowers and Fruit of a Variety of Guava",
     "artist": "Marianne North",
     "year": "1872",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20261005-015704.jpg"
-  },
-  {
-    "title": "View of the Maharajah of Johore's House from Major McNair's Garden, Singapore",
-    "artist": "Marianne North",
-    "year": "1876",
-    "image_url": "painting-20261004-023359.jpg"
   }
 ]
