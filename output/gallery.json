@@ -1,5 +1,11 @@
 [
   {
+    "title": "The South African Doornboom and Fingo Huts",
+    "artist": "Marianne North",
+    "year": "1882",
+    "image_url": "painting-20261017-011700.jpg"
+  },
+  {
     "title": "Brisbane Botanic Gardens",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1872",
     "image_url": "painting-20261006-025621.jpg"
-  },
-  {
-    "title": "Group of Nikau Palms with the Background of the Kawa Kawa, New Zealand",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20261005-015704.jpg"
   }
 ]
