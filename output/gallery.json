@@ -1,5 +1,11 @@
 [
   {
+    "title": "A Climber in Flower and Fruit, Sarawak, Borneo",
+    "artist": "Marianne North",
+    "year": "1876",
+    "image_url": "painting-20261018-005953.jpg"
+  },
+  {
     "title": "The South African Doornboom and Fingo Huts",
     "artist": "Marianne North",
     "year": "1882",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1876",
     "image_url": "painting-20261007-022049.jpg"
-  },
-  {
-    "title": "Foliage and Double Flowers of the Sandal-Wood Bramble",
-    "artist": "Marianne North",
-    "year": "1872",
-    "image_url": "painting-20261006-025621.jpg"
   }
 ]
