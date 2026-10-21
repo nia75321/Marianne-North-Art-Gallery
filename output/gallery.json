@@ -1,5 +1,11 @@
 [
   {
+    "title": "Flowers of a Jasmine and Pink Begonia, Borneo",
+    "artist": "Marianne North",
+    "year": "1876",
+    "image_url": "painting-20261021-013226.jpg"
+  },
+  {
     "title": "Street Scene, Mathura. '6th Decr. 1878'",
     "artist": "Marianne North",
     "year": "1878",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "c.1870",
     "image_url": "painting-20261010-021806.jpg"
-  },
-  {
-    "title": "Fig-Tree Village and Its Big Godfather, Illawarra",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20261009-025542.jpg"
   }
 ]
