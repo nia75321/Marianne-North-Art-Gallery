@@ -1,5 +1,11 @@
 [
   {
+    "title": "Group of Brazilian Forest Wild Flowers and Berries",
+    "artist": "Marianne North",
+    "year": "1873",
+    "image_url": "painting-20261022-012821.jpg"
+  },
+  {
     "title": "Flowers of a Jasmine and Pink Begonia, Borneo",
     "artist": "Marianne North",
     "year": "1876",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20261011-015017.jpg"
-  },
-  {
-    "title": "Leaf-Insects and Stick-Insects",
-    "artist": "Marianne North",
-    "year": "c.1870",
-    "image_url": "painting-20261010-021806.jpg"
   }
 ]
