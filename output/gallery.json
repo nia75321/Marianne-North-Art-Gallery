@@ -1,5 +1,11 @@
 [
   {
+    "title": "Limestone Mountains of Sarawak, Borneo",
+    "artist": "Marianne North",
+    "year": "1876",
+    "image_url": "painting-20261026-010712.jpg"
+  },
+  {
     "title": "Exotic Flowering Plant on a Black Background*",
     "artist": "Marianne North",
     "year": "1882",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1872",
     "image_url": "painting-20261015-012625.jpg"
-  },
-  {
-    "title": "Inflorescence of the West Indian Pinguin",
-    "artist": "Marianne North",
-    "year": "1872",
-    "image_url": "painting-20261014-015240.jpg"
   }
 ]
