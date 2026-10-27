@@ -1,5 +1,11 @@
 [
   {
+    "title": "View of Mrs Skinner's House at West Manchester, Massachusetts",
+    "artist": "Marianne North",
+    "year": "1871",
+    "image_url": "painting-20261027-020135.jpg"
+  },
+  {
     "title": "Limestone Mountains of Sarawak, Borneo",
     "artist": "Marianne North",
     "year": "1876",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20261016-011749.jpg"
-  },
-  {
-    "title": "Foliage, Flowers and Fruit of a Variety of Guava",
-    "artist": "Marianne North",
-    "year": "1872",
-    "image_url": "painting-20261015-012625.jpg"
   }
 ]
