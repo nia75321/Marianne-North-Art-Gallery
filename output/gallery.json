@@ -1,5 +1,11 @@
 [
   {
+    "title": "An Old Red Cedar on the Rocks near West Manchester, Massachusetts",
+    "artist": "Marianne North",
+    "year": "1871",
+    "image_url": "painting-20261028-021054.jpg"
+  },
+  {
     "title": "View of Mrs Skinner's House at West Manchester, Massachusetts",
     "artist": "Marianne North",
     "year": "1871",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1882",
     "image_url": "painting-20261017-011700.jpg"
-  },
-  {
-    "title": "Brisbane Botanic Gardens",
-    "artist": "Marianne North",
-    "year": "",
-    "image_url": "painting-20261016-011749.jpg"
   }
 ]
