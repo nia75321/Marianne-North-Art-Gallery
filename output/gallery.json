@@ -1,5 +1,11 @@
 [
   {
+    "title": "Lane near Singapore",
+    "artist": "Marianne North",
+    "year": "1876",
+    "image_url": "painting-20261101-021012.jpg"
+  },
+  {
     "title": "Foliage and Flowers of an Indian Forest Tree of Great Beauty",
     "artist": "Marianne North",
     "year": "1878",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1876",
     "image_url": "painting-20261021-013226.jpg"
-  },
-  {
-    "title": "Street Scene, Mathura. '6th Decr. 1878'",
-    "artist": "Marianne North",
-    "year": "1878",
-    "image_url": "painting-20261020-014719.jpg"
   }
 ]
