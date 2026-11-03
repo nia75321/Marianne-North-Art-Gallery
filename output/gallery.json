@@ -1,5 +1,11 @@
 [
   {
+    "title": "The Chumpa or Champak",
+    "artist": "Marianne North",
+    "year": "1878",
+    "image_url": "painting-20261103-035459.jpg"
+  },
+  {
     "title": "Red and Green Cyrtanthus, Crassula, and Orchids, South Africa",
     "artist": "Marianne North",
     "year": "1882",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1878",
     "image_url": "painting-20261023-012713.jpg"
-  },
-  {
-    "title": "Group of Brazilian Forest Wild Flowers and Berries",
-    "artist": "Marianne North",
-    "year": "1873",
-    "image_url": "painting-20261022-012821.jpg"
   }
 ]
