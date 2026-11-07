@@ -1,5 +1,11 @@
 [
   {
+    "title": "A Japanese Magnolia",
+    "artist": "Marianne North",
+    "year": "1880",
+    "image_url": "painting-20261107-024609.jpg"
+  },
+  {
     "title": "Some Fruits and Vegetables Used in Brazil",
     "artist": "Marianne North",
     "year": "1873",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1871",
     "image_url": "painting-20261027-020135.jpg"
-  },
-  {
-    "title": "Limestone Mountains of Sarawak, Borneo",
-    "artist": "Marianne North",
-    "year": "1876",
-    "image_url": "painting-20261026-010712.jpg"
   }
 ]
