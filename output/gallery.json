@@ -1,5 +1,11 @@
 [
   {
+    "title": "Tegoro, Sarawak",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20261110-043654.jpg"
+  },
+  {
     "title": "Flowers and Seed-Vessels of a West Australian Gum Tree and Honeysuckers",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "",
     "image_url": "painting-20261030-023423.jpg"
-  },
-  {
-    "title": "View in Singapore with Nyum-Nyum Tree",
-    "artist": "Marianne North",
-    "year": "1876",
-    "image_url": "painting-20261029-022352.jpg"
   }
 ]
