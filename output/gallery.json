@@ -1,5 +1,11 @@
 [
   {
+    "title": "Elephants",
+    "artist": "Marianne North",
+    "year": "",
+    "image_url": "painting-20261112-034728.jpg"
+  },
+  {
     "title": "Entrance to the Mandapan, Madura",
     "artist": "Marianne North",
     "year": "",
@@ -64,11 +70,5 @@
     "artist": "Marianne North",
     "year": "1876",
     "image_url": "painting-20261101-021012.jpg"
-  },
-  {
-    "title": "Foliage and Flowers of an Indian Forest Tree of Great Beauty",
-    "artist": "Marianne North",
-    "year": "1878",
-    "image_url": "painting-20261031-021830.jpg"
   }
 ]
