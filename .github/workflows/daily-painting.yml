@@ -1,8 +1,8 @@
 name: Daily Painting
 
 on:
-  schedule:
-    - cron: "10 */23 * * *"
+  # schedule:
+  #   - cron: "10 */23 * * *"
   workflow_dispatch:
 
 permissions:
@@ -10,7 +10,7 @@ permissions:
 
 env:
   COS_HOST: "marianne-north-art-1474440715.cos.ap-shanghai.myqcloud.com"
-
+ 
 jobs:
   paint:
     runs-on: ubuntu-latest
